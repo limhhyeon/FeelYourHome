@@ -101,7 +101,7 @@ public class AuthService {
                 // 기존 리프레시 토큰이 존재하면 업데이트
                 RefreshToken existingToken = existingTokenOpt.get();
                 existingToken.setToken(refreshToken); // 새로운 리프레시 토큰으로 업데이트
-                existingToken.setExpiresAt(LocalDateTime.now().plusDays(7)); // 만료일 업데이트
+                existingToken.setExpiresAt(LocalDateTime.now().plusDays(8)); // 만료일 업데이트
                 refreshTokenRepository.save(existingToken); // DB에 저장
             } else {
                 // 기존 리프레시 토큰이 없으면 새로 생성
