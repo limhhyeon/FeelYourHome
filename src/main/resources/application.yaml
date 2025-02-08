@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  logging:
+    level:
+      org.springframework.security: DEBUG
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ENC(jfsp8bM9sus+jm96fzRcSLkRRzLbVgwyKqcc/SK0zJW6zuYlTSS434weJ/weZINb)
+            client-secret: ENC(+7ZnlPP0QZcoVfNt1Qzenld1TRPCUNQbJYa7nI0Nw06/Qet/F8wIM9wcEzBZxm54)
+            authorization-grant-type: authorization_code
+            redirect-uri: ENC(MfoQHbr+dt8k+mk9kXtSOPRapJMuWnqE+3CKm5UXEp4fGhRoMrPstKh8XzppwjWZ3Y486hqXBG4=)
+            client-name: Kakao
+            client-authentication-method: post
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email  # 필요시 추가
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  datasource:
+    url: jdbc:mysql://localhost:3306/individual_project?useUnicode=true&characterEncoding=UTF-8
+    username: ENC(wN8PJa6sdt2a/vP0XYlM4A==)
+    password: ENC(V1CreIfUoLKDwcUub8DQu9ZRSymbzxaw)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  mail:
+    # Google smtp server 사용
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(jnteSJMm8b3wUIMSYrDApKD5bjG3/jpmkoAZGzlNjbM=)
+    password: ENC(q8mmd1WSC2gR8ZJaKGZXvWPfOn4iiRDhe0r8bITa+jw=)
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+jwt:
+  secret-key-source: ENC(BzeXxxOy2GUdozXi0U55AgkBMASZ23V2)
+jasypt:
+  encryptor:
+    password: ${JASYPT_SECRET_KEY}
+    bean: jasyptStringEncryptor
