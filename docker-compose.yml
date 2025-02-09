@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    image: honghyeon/honghyeon:v1
+    container_name: your-container-name
+    environment:
+      - JASYPT_SECRET_KEY=${JASYPT_SECRET_KEY}
+    ports:
+      - "8080:8080"
+    restart: always
