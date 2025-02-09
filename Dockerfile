@@ -11,5 +11,7 @@ COPY build/libs/*.jar /app/
 ENV JASYPT_SECRET_KEY=${JASYPT_SECRET_KEY}
 
 # 실행 명령어
-CMD ["nohup", "java", "-jar", "app.jar", ">", "app.log", "2>&1", "&"]
+CMD ["java", "-jar", "app.jar"]
+
+# 컨테이너가 8080 포트를 리스닝하도록 설정
 EXPOSE 8080
