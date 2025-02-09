@@ -11,4 +11,4 @@ COPY build/libs/*.jar app.jar
 ENV JASYPT_SECRET_KEY=${JASYPT_SECRET_KEY}
 
 # 실행 명령어
-CMD ["nohup", "java", "-jar", "app.jar", ">", "app.log", "2>&1", "&"]
+CMD ["sh", "-c", "java -jar app.jar > app.log 2>&1 &"]
