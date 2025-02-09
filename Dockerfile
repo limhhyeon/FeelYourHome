@@ -5,11 +5,11 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # JAR 파일 복사
-COPY build/libs/*.jar app.jar
+COPY build/libs/*.jar /app/
 
 # 환경변수 설정
 ENV JASYPT_SECRET_KEY=${JASYPT_SECRET_KEY}
 
-# 실행 명령어 (로그를 stdout으로 출력)
-CMD ["java", "-jar", "app.jar"]
+# 실행 명령어
+CMD ["nohup", "java", "-jar", "app.jar", ">", "app.log", "2>&1", "&"]
 EXPOSE 8080
