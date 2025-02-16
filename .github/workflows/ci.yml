@@ -18,4 +18,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t my-app .
+          docker build -t honghyeon/honghyeon .
+
+      - name: Docker Login to Docker Hub
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push honghyeon/honghyeon:latest  # 빌드한 이미지를 Docker Hub로 푸시
