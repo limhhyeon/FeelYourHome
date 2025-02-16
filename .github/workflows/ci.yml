@@ -1,0 +1,19 @@
+name: CI - Build Docker Image
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시 시 CI 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # 코드를 체크아웃합니다.
+
+      # 1. Docker 이미지를 빌드
+      - name: Build Docker image
+        run: |
+          docker build -t my-app .  # Dockerfile을 이용해 이미지 빌드
