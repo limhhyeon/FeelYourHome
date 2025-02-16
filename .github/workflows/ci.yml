@@ -1,33 +1,21 @@
-name: CI - Build and Deploy
+name: CI Pipeline
 
 on:
   push:
     branches:
-      - main
+      - main  # main 브랜치에 푸시될 때마다 실행
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission to gradlew
-        run: chmod +x gradlew  # gradlew에 실행 권한 부여
-
-      - name: Build the project with Gradle
-        run: ./gradlew build  # Gradle 빌드를 실행하여 JAR 파일을 생성
-
-      - name: List build directory
-        run: ls -la build/libs  # JAR 파일이 생성되었는지 확인
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Build Docker image
-        run: docker build -t my-app .  # Dockerfile을 사용하여 Docker 이미지 빌드
-        working-directory: ./  # Docker 빌드를 실행할 경로를 지정 (기본적으로 현재 경로)
+        run: |
+          docker build -t my-app .

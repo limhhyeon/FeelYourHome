@@ -1,9 +1,10 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - main  # main 브랜치에 푸시될 때마다 배포 진행
+  workflow_run:
+    workflows: ["CI Pipeline"]  # CI 파이프라인이 완료되면 실행
+    types:
+      - completed
 
 jobs:
   deploy:
