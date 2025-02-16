@@ -4,7 +4,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # JAR 파일 복사
-COPY build/libs/Individualproject-0.0.1-SNAPSHOT.jar.jar /app/app.jar
+COPY build/libs/Individualproject-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # 환경변수 설정
 ENV JASYPT_SECRET_KEY=${JASYPT_SECRET_KEY}
