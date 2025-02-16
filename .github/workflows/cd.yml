@@ -18,9 +18,9 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{secrets.EC2_HOST}}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{secrets.EC2_SSH_PRIVATE_KEY}}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             echo "배포 시작..."
             cd /home/ubuntu/my-app  # EC2에서 프로젝트 디렉토리로 이동
