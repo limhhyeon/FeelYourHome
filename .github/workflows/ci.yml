@@ -1,19 +1,29 @@
-name: CI - Build Docker Image
+name: CI - Build and Deploy
 
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시 시 CI 실행
+      - main
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # 코드를 체크아웃합니다.
+        uses: actions/checkout@v4
 
-      # 1. Docker 이미지를 빌드
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+
+      - name: Build the project with Gradle
+        run: ./gradlew build  # Gradle 빌드를 실행하여 JAR 파일을 생성
+
+      - name: List build directory
+        run: ls -la build/libs  # JAR 파일이 생성되었는지 확인
+
       - name: Build Docker image
-        run: |
-          docker build -t my-app .  # Dockerfile을 이용해 이미지 빌드
+        run: docker build -t my-app .  # Dockerfile을 사용하여 Docker 이미지 빌드
+        working-directory: ./  # Docker 빌드를 실행할 경로를 지정 (기본적으로 현재 경로)
