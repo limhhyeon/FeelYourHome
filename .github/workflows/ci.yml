@@ -26,4 +26,4 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push honghyeon/honghyeon:latest  # 빌드한 이미지를 Docker Hub로 푸시
+          docker push honghyeon/honghyeon:v1  # 빌드한 이미지를 Docker Hub로 푸시
