@@ -18,7 +18,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t honghyeon/honghyeon .
+          docker build -t honghyeon/honghyeon:v1 .
 
       - name: Docker Login to Docker Hub
         run: |
