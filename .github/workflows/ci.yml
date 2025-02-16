@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
+          distribution: 'temurin'  # 배포판을 설정합니다. 예: adoptopenjdk, zulu, temurin 등
 
       - name: Build the project with Gradle
         run: ./gradlew build  # Gradle 빌드를 실행하여 JAR 파일을 생성
