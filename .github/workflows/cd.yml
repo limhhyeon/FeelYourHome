@@ -28,4 +28,4 @@ jobs:
             docker pull honghyeon/honghyeon:v1
             docker stop my-app || true  # 기존 컨테이너 중지
             docker rm my-app || true  # 기존 컨테이너 삭제
-            docker run -d --name my-app -p 8080:8080 -e my-app  # 새로 빌드한 이미지로 컨테이너 실행
+            docker run -d --name my-app -p 8080:8080 -e JASYPT_SECRET_KEY=${{ secrets.JASYPT_SECRET_KEY }} my-app  # 새로 빌드한 이미지로 컨테이너 실행
