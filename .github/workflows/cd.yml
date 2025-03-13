@@ -1,31 +1,31 @@
-name: Deploy to EC2
-
-on:
-  workflow_run:
-    workflows: ["CI Pipeline"]  # CI 파이프라인이 완료되면 실행
-    types:
-      - completed
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest  # GitHub Actions는 Ubuntu 환경에서 실행됩니다.
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # 코드를 체크아웃합니다.s
-
-      # 2. EC2 서버로 SSH 연결 후 배포 작업 실행ss
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            echo "배포 시작..."
-            # Docker Hub에 로그인
-            echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-            docker pull honghyeon/honghyeon:v1
-            docker stop my-app || true  # 기존 컨테이너 중지
-            docker rm my-app || true  # 기존 컨테이너 삭제
-            docker run -d --name my-app -p 8080:8080 -e JASYPT_SECRET_KEY=${{ secrets.JASYPT_SECRET_KEY }} honghyeon/honghyeon:v1  # 새로 빌드한 이미지로 컨테이너 실행
+#name: Deploy to EC2
+#
+#on:
+#  workflow_run:
+#    workflows: ["CI Pipeline"]  # CI 파이프라인이 완료되면 실행
+#    types:
+#      - completed
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest  # GitHub Actions는 Ubuntu 환경에서 실행됩니다.
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4  # 코드를 체크아웃합니다.s
+#
+#      # 2. EC2 서버로 SSH 연결 후 배포 작업 실행ss
+#      - name: Deploy to EC2
+#        uses: appleboy/ssh-action@v0.1.7
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+#          script: |
+#            echo "배포 시작..."
+#            # Docker Hub에 로그인
+#            echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+#            docker pull honghyeon/honghyeon:v1
+#            docker stop my-app || true  # 기존 컨테이너 중지
+#            docker rm my-app || true  # 기존 컨테이너 삭제
+#            docker run -d --name my-app -p 8080:8080 -e JASYPT_SECRET_KEY=${{ secrets.JASYPT_SECRET_KEY }} honghyeon/honghyeon:v1  # 새로 빌드한 이미지로 컨테이너 실행
