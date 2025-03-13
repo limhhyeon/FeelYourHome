@@ -29,4 +29,11 @@ public class UserProduct extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
+
+    public static UserProduct of(User user, Product product){
+        return UserProduct.builder()
+                .user(user)
+                .product(product)
+                .build();
+    }
 }

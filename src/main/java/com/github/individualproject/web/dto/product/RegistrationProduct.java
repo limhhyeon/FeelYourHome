@@ -9,6 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class BuyProduct {
+public class RegistrationProduct {
     private final String productCode;
 }

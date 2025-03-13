@@ -1,11 +1,9 @@
 package com.github.individualproject.repository.product;
 
 import com.github.individualproject.repository.base.BaseEntity;
-import com.github.individualproject.web.dto.product.BuyProduct;
+import com.github.individualproject.web.dto.product.RegistrationProduct;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -23,9 +21,9 @@ public class Product extends BaseEntity {
     @Column(name = "product_code", nullable = false, length = 50, unique = true)
     private String productCode;
 
-    public static Product from(BuyProduct buyProduct){
+    public static Product from(RegistrationProduct registrationProduct){
         return Product.builder()
-                .productCode(buyProduct.getProductCode())
+                .productCode(registrationProduct.getProductCode())
                 .build();
     }
 
