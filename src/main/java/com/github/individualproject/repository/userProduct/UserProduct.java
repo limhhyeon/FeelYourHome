@@ -22,12 +22,12 @@ public class UserProduct extends BaseEntity {
     @Column(name = "user_product_id")
     private Long userProductId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     public static UserProduct of(User user, Product product){

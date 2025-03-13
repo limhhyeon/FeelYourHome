@@ -3,14 +3,11 @@ package com.github.individualproject.web.controller;
 import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.product.ProductService;
 import com.github.individualproject.web.dto.ResponseDto;
-import com.github.individualproject.web.dto.product.RegistrationProduct;
+import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/product")
@@ -28,5 +25,10 @@ public class ProductController {
     @PostMapping("")
     public ResponseDto productRegistration(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody RegistrationProduct registrationProduct){
         return productService.productRegistrationResult(customUserDetails,registrationProduct);
+    }
+    //자신이 등록 한 상품 리스트 보기
+    @GetMapping("")
+    public ResponseDto myProductList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam(defaultValue = "0",value = "page",required = false) Integer page){
+        return productService.myProductListResult(customUserDetails,page);
     }
 }

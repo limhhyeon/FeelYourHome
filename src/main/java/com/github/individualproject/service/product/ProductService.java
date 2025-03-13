@@ -10,11 +10,17 @@ import com.github.individualproject.repository.userProduct.UserProductRepository
 import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.web.dto.ResponseDto;
-import com.github.individualproject.web.dto.product.RegistrationProduct;
+import com.github.individualproject.web.dto.product.request.RegistrationProduct;
+import com.github.individualproject.web.dto.product.response.MyProductList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class ProductService {
     private final UserProductRepository userProductRepository;
     private final UserRepository userRepository;
 
+    //상품 구매
     public ResponseDto buyProductResult(RegistrationProduct registrationProduct)  {
         if (productRepository.existsByProductCode(registrationProduct.getProductCode())){
             throw new BadRequestException("이미 판매가 진행된 상품 코드 : " + registrationProduct.getProductCode()+ " 입니다.");
@@ -33,6 +40,7 @@ public class ProductService {
         return new ResponseDto(HttpStatus.CREATED.value(), registrationProduct.getProductCode() + "가 정상적으로 구매되었습니다.");
     }
 
+    //내가 산 상품 등록
     public ResponseDto productRegistrationResult(CustomUserDetails customUserDetails, RegistrationProduct registrationProduct) {
         User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
                 .orElseThrow(()-> new NotFoundException("유저 정보가 없습니다."));
@@ -48,5 +56,17 @@ public class ProductService {
         UserProduct userProduct = UserProduct.of(user,product);
         userProductRepository.save(userProduct);
         return new ResponseDto(HttpStatus.CREATED.value(),productCode + " 상품이 정상적으로 등록되었습니다.");
+    }
+
+    //내 상품 리스트 조회
+    public ResponseDto myProductListResult(CustomUserDetails customUserDetails,Integer page) {
+        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
+                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+        Pageable pageable = PageRequest.of(page,10);
+        Page<UserProduct> userProducts = userProductRepository.findAllByUser(user,pageable);
+        Page<MyProductList> myProductLists = userProducts.map(MyProductList::from);
+        return new ResponseDto(HttpStatus.OK.value(),"내 등록 상품 리스트 조회 성공",myProductLists);
+
+
     }
 }

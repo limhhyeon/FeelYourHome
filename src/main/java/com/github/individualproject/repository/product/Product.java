@@ -1,7 +1,7 @@
 package com.github.individualproject.repository.product;
 
 import com.github.individualproject.repository.base.BaseEntity;
-import com.github.individualproject.web.dto.product.RegistrationProduct;
+import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import jakarta.persistence.*;
 import lombok.*;
 

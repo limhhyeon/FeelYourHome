@@ -1,4 +1,4 @@
-package com.github.individualproject.web.dto.product;
+package com.github.individualproject.web.dto.product.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
