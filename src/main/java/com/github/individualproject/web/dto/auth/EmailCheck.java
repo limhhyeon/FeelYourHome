@@ -1,8 +1,11 @@
 package com.github.individualproject.web.dto.auth;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@AllArgsConstructor
+@ToString
+@Builder
 public class EmailCheck {
     private final String email;
 }

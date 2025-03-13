@@ -7,17 +7,15 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SignUp {
-    private String name;
-    private String email;
-    private String password;
-    private String passwordCheck;
-    private LocalDate birthday;
-    private String phoneNumber;
+    private final String name;
+    private final String email;
+    private final String password;
+    private final String passwordCheck;
+    private final LocalDate birthday;
+    private final String phoneNumber;
 }

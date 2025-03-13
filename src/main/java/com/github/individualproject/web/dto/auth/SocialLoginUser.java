@@ -1,16 +1,17 @@
 package com.github.individualproject.web.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Map;
 
-@Data
+@Getter
 @AllArgsConstructor
+@ToString
+@Builder
 public class SocialLoginUser {
-    private Long id;
-    private String email;
-    private String nickname;
+    private final Long id;
+    private final String email;
+    private final String nickname;
 
 
 

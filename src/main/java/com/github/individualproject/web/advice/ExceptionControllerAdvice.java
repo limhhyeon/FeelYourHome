@@ -1,5 +1,6 @@
 package com.github.individualproject.web.advice;
 
+import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.CAuthenticationEntryPointException;
 import com.github.individualproject.service.exception.NotAcceptException;
 import com.github.individualproject.service.exception.NotFoundException;
@@ -38,5 +39,11 @@ public class ExceptionControllerAdvice {
     public ResponseDto handleAuthenticationException(CAuthenticationEntryPointException ae){
         log.error("Client 요청에 문제가 있어 다음처럼 출력합니다. " + ae.getMessage());
         return new ResponseDto(HttpStatus.UNAUTHORIZED.value(),ae.getMessage());
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseDto handleBadRequestException(BadRequestException bre){
+        log.error("Client 요청에 문제가 있어 다음처럼 출력합니다. " + bre.getMessage());
+        return new ResponseDto(HttpStatus.BAD_REQUEST.value(),bre.getMessage());
     }
 }

@@ -1,10 +1,11 @@
 package com.github.individualproject.web.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
 @AllArgsConstructor
+@ToString
+@Builder
 public class TokenDto {
     private String accessToken;
     private String refreshToken;

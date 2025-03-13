@@ -1,17 +1,13 @@
 package com.github.individualproject.web.dto.auth;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Builder
+@ToString
+@AllArgsConstructor
 public class RefreshTokenRequest {
     private String refreshToken;
 
-    // 기본 생성자
-    public RefreshTokenRequest() {}
-
-    // 생성자
-    public RefreshTokenRequest(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
 }
