@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class ProductService {
     }
 
     //내가 산 상품 등록
+    @Transactional
     public ResponseDto productRegistrationResult(CustomUserDetails customUserDetails, RegistrationProduct registrationProduct) {
         User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
                 .orElseThrow(()-> new NotFoundException("유저 정보가 없습니다."));
@@ -54,11 +56,13 @@ public class ProductService {
         if (userProductRepository.existsByProduct(product)){
             throw new BadRequestException("이미 등록한 상품입니다.");
         }
+        String topic = "dht22/data/lhh/"+productCode;
+
         //상품 등록
-        UserProduct userProduct = UserProduct.of(user,product);
+        UserProduct userProduct = UserProduct.of(user,product,topic);
         userProductRepository.save(userProduct);
+
         // MQTT 토픽 생성 및 구독 추가
-        String topic = "dht22/" + user.getUserId() + "/" + productCode + "/#";
         mqttAdapter.addTopic(topic);
         System.out.println("구독 추가: " + topic);
 

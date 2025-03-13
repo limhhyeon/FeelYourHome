@@ -30,10 +30,14 @@ public class UserProduct extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    public static UserProduct of(User user, Product product){
+    @Column(name = "mqtt_topic",length = 255,nullable = false)
+    private String mqttTopic;
+
+    public static UserProduct of(User user, Product product,String mqttTopic){
         return UserProduct.builder()
                 .user(user)
                 .product(product)
+                .mqttTopic(mqttTopic)
                 .build();
     }
 }
