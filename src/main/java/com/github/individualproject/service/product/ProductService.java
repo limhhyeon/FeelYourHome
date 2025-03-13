@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserProductRepository userProductRepository;
     private final UserRepository userRepository;
+    private final MqttPahoMessageDrivenChannelAdapter mqttAdapter;
 
     //상품 구매
     public ResponseDto buyProductResult(RegistrationProduct registrationProduct)  {
@@ -55,6 +57,11 @@ public class ProductService {
         //상품 등록
         UserProduct userProduct = UserProduct.of(user,product);
         userProductRepository.save(userProduct);
+        // MQTT 토픽 생성 및 구독 추가
+        String topic = "dht22/" + user.getUserId() + "/" + productCode + "/#";
+        mqttAdapter.addTopic(topic);
+        System.out.println("구독 추가: " + topic);
+
         return new ResponseDto(HttpStatus.CREATED.value(),productCode + " 상품이 정상적으로 등록되었습니다.");
     }
 

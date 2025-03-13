@@ -31,8 +31,17 @@ public class MqttConfig {
         return new DirectChannel();
     }
 
+//    @Bean
+//    public MessageProducer inbound() {
+//        MqttPahoMessageDrivenChannelAdapter adapter =
+//                new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
+//        adapter.setOutputChannelName("mqttInputChannel");
+//        adapter.setCompletionTimeout(5000);
+//        adapter.setQos(1);
+//        return adapter;
+//    }
     @Bean
-    public MessageProducer inbound() {
+    public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
         adapter.setOutputChannelName("mqttInputChannel");
