@@ -1,6 +1,6 @@
 package com.github.individualproject.service.auth;
 
-import com.github.individualproject.config.JwtTokenProvider;
+import com.github.individualproject.config.auth.JwtTokenProvider;
 import com.github.individualproject.repository.refreshToken.RefreshToken;
 import com.github.individualproject.repository.refreshToken.RefreshTokenRepository;
 import com.github.individualproject.repository.role.Role;

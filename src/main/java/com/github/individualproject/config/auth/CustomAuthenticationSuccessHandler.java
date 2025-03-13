@@ -1,6 +1,6 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
-import com.github.individualproject.config.JwtTokenProvider;
+import com.github.individualproject.config.auth.JwtTokenProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

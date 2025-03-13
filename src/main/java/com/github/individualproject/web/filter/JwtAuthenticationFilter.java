@@ -1,6 +1,6 @@
 package com.github.individualproject.web.filter;
 
-import com.github.individualproject.config.JwtTokenProvider;
+import com.github.individualproject.config.auth.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

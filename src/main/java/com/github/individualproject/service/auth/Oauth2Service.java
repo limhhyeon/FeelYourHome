@@ -3,7 +3,7 @@ package com.github.individualproject.service.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.individualproject.config.JwtTokenProvider;
+import com.github.individualproject.config.auth.JwtTokenProvider;
 import com.github.individualproject.repository.role.Role;
 import com.github.individualproject.repository.role.RoleRepository;
 import com.github.individualproject.repository.user.User;
