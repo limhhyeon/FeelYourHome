@@ -1,4 +1,4 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.jasypt.encryption.StringEncryptor;

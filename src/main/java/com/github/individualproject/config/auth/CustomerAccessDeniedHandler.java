@@ -1,4 +1,4 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

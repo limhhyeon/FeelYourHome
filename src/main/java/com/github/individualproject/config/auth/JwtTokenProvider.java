@@ -1,4 +1,4 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
 import com.github.individualproject.repository.refreshToken.RefreshToken;
 import com.github.individualproject.repository.refreshToken.RefreshTokenRepository;

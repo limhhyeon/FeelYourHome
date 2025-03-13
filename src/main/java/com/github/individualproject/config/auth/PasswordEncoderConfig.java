@@ -1,4 +1,4 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
