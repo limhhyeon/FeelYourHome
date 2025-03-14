@@ -65,14 +65,14 @@ public class MqttConfig {
 //    }
     @Bean
     public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
-        MqttPahoMessageDrivenChannelAdapter adapters =
+        MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
-        this.adapter = adapters;
+        this.adapter = adapter;
         adapter.setOutputChannelName("mqttInputChannel");
         adapter.setCompletionTimeout(5000);
         adapter.setQos(1);
         new Thread(() -> {
-            while (!adapters.isRunning()) {
+            while (!adapter.isRunning()) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -87,7 +87,7 @@ public class MqttConfig {
                 topics = userProductRepository.findActiveMqttTopicsByActive(PageRequest.of(page, size));
                 for (String topic : topics) {
                     if (!topic.isEmpty()) {
-                        adapters.addTopic(topic);
+                        adapter.addTopic(topic);
                         System.out.println("복원된 구독: " + topic);
                     }
                 }
@@ -97,11 +97,18 @@ public class MqttConfig {
             System.out.println("모든 구독 복원 완료");
         }).start();
 
-        return adapters;
+        return adapter;
     }
     @PreDestroy
     public void destroy() {
         if (adapter != null && adapter.isRunning()) {
+            String[] currentTopics = adapter.getTopic();
+            if (currentTopics != null) {
+                for (String topic : currentTopics) {
+                    adapter.removeTopic(topic); // 명시적 구독 해제
+                    System.out.println("구독 해제: " + topic);
+                }
+            }
             adapter.stop();
             System.out.println("MqttAdapter 종료: 구독 정리 완료");
         }

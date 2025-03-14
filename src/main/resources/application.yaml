@@ -55,3 +55,5 @@ jasypt:
   encryptor:
     password: ${JASYPT_SECRET_KEY}
     bean: jasyptStringEncryptor
+sub:
+  path: ENC(MYPPAXcX1gLrBroq6gTstQZEEHsQ4Fyi)

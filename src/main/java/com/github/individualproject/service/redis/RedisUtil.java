@@ -26,6 +26,7 @@ public class RedisUtil {
     private final StringRedisTemplate redisTemplate;
     private final RedisTemplate<String, SensorResponse> sensorResponseRedisTemplate;
     private final RedisTemplate<String,UserProduct> userProductRedisTemplate;
+    private final RedisTemplate<String,String> StringRedisTemplate;
     private final UserProductRepository userProductRepository;
     private static final String CACHE_PREFIX = "sensor:";
     private static final String CACHE_USERPRODUCT ="user_product:";
@@ -44,6 +45,21 @@ public class RedisUtil {
         String sensorKey = CACHE_PREFIX + topic;
         log.info("sensorKey : "+sensorKey);
         sensorResponseRedisTemplate.opsForList().rightPush(sensorKey, sensorResponse);
+    }
+    // --- 추가: Set에 값 추가 ---
+    public void addToSet(String setKey, String value) {
+        StringRedisTemplate.opsForSet().add(setKey, value);
+    }
+
+    // --- 추가: Set 멤버 조회 ---
+    public Set<String> getSetMembers(String setKey) {
+        Set<String> members = StringRedisTemplate.opsForSet().members(setKey);
+        return members != null ? members : Collections.emptySet();
+    }
+
+    // --- 추가: 키 삭제 ---
+    public void deleteKey(String key) {
+        StringRedisTemplate.delete(key);
     }
     public void deleteAllSensorResponse(){
         String pattern = CACHE_PREFIX+"*";

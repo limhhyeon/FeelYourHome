@@ -11,5 +11,5 @@ import lombok.ToString;
 @Builder
 public class RegistrationProduct {
     private final String productCode;
-    private final String clientId;
+
 }

@@ -15,6 +15,7 @@ import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import com.github.individualproject.web.dto.product.response.MyProductList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,8 @@ public class ProductService {
     private final UserProductRepository userProductRepository;
     private final UserRepository userRepository;
     private final MqttPahoMessageDrivenChannelAdapter mqttAdapter;
+    @Value("${sub.path}")
+    private String PATH;
 
     //상품 구매
     public ResponseDto buyProductResult(BuyProduct buyProduct)  {
@@ -57,8 +60,8 @@ public class ProductService {
         if (userProductRepository.existsByProduct(product)){
             throw new BadRequestException("이미 등록한 상품입니다.");
         }
-        String topic = "dht22/data/lhh/"+productCode;
-        String clientId = registrationProduct.getClientId();
+        String topic = PATH+productCode;
+        String clientId = product.getClientId();
 
         //상품 등록
         UserProduct userProduct = UserProduct.of(user,product,topic,clientId);

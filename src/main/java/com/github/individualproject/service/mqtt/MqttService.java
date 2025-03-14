@@ -13,6 +13,8 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,6 +22,10 @@ public class MqttService {
     private final UserProductRepository userProductRepository;
     private final MqttClient mqttStatusClient;
     private final MqttPahoMessageDrivenChannelAdapter mqttAdapter;
+    private final RedisUtil redisUtil;
+    private static final String REDIS_KEY_PREFIX = "device_status:";
+    private static final String CHANGED_CLIENTS_KEY = "changed_clientIds";
+
 
 
 
@@ -60,15 +66,17 @@ public class MqttService {
                 if (userProduct== null){
                     return;
                 }
-
+                String redisKey = REDIS_KEY_PREFIX + clientId;
                 // 상태 업데이트
                 if ("OFF".equals(payload)) {
-                    userProduct.updateStatus(Status.INACTIVE);
+                    redisUtil.setData(redisKey, Status.INACTIVE.name(), 86400);
                     log.info("기계 {} 꺼짐 상태로 업데이트", clientId);
+                    redisUtil.addToSet(CHANGED_CLIENTS_KEY, clientId); // RedisUtil로 Set 추가
                     mqttAdapter.removeTopic(userProduct.getMqttTopic());
                 } else if ("ON".equals(payload)) {
-                    userProduct.updateStatus(Status.ACTIVE);
+                    redisUtil.setData(redisKey, Status.INACTIVE.name(), 86400);
                     log.info("기계 {} 켜짐 상태로 업데이트", clientId);
+                    redisUtil.addToSet(CHANGED_CLIENTS_KEY, clientId); // RedisUtil로 Set 추가
                     mqttAdapter.addTopic(userProduct.getMqttTopic());
                 } else {
                     log.warn("알 수 없는 상태: {}", payload);
@@ -84,6 +92,11 @@ public class MqttService {
     }
     @PreDestroy
     public void destroy() {
+        log.info("MqttService 종료 시작");
+        saveRedisStateToDb();    // Redis 상태 저장
+        cleanupMqttConnection();
+    }
+    private void cleanupMqttConnection() {
         try {
             if (mqttStatusClient.isConnected()) {
                 mqttStatusClient.unsubscribe("device/status/#");
@@ -93,6 +106,27 @@ public class MqttService {
             }
         } catch (MqttException e) {
             log.error("MqttService 종료 중 오류: {}", e.getMessage());
+        }
+    }
+
+    // --- 추가: Redis 상태를 DB에 저장하는 메서드 ---
+    private void saveRedisStateToDb() {
+        Set<String> changedClientIds = redisUtil.getSetMembers(CHANGED_CLIENTS_KEY);
+        if (changedClientIds != null && !changedClientIds.isEmpty()) {
+            for (String clientId : changedClientIds) {
+                String redisKey = REDIS_KEY_PREFIX + clientId;
+                String statusStr = redisUtil.getData(redisKey);
+                if (statusStr != null) {
+                    UserProduct userProduct = userProductRepository.findByClientId(clientId).orElse(null);
+                    if (userProduct != null) {
+                        Status status = Status.valueOf(statusStr);
+                        userProduct.updateStatus(status);
+                        userProductRepository.save(userProduct);
+                        log.info("서버 종료 전 마지막 상태 저장: clientId={}, status={}", clientId, status);
+                    }
+                }
+            }
+            redisUtil.deleteKey(CHANGED_CLIENTS_KEY);
         }
     }
 }

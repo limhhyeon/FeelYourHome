@@ -10,8 +10,10 @@ import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.user.UserRepository;
 import com.github.individualproject.repository.userRole.UserRole;
 import com.github.individualproject.repository.userRole.UserRoleRepository;
+import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.web.dto.auth.SocialLoginUser;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -160,4 +163,15 @@ public class Oauth2Service {
     }
 
 
+    public void redirect(HttpServletResponse response) {
+
+
+        String authUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri + "&through_account=true&additional_auth_login=true";
+        try{
+            response.sendRedirect(authUrl); // 카카오 로그인 페이지로 리디렉션
+        }catch (IOException ioe){
+            throw new NotFoundException("잘못된 주소입니다.");
+        }
+
+    }
 }

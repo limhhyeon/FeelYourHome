@@ -11,4 +11,5 @@ import lombok.ToString;
 @Builder
 public class BuyProduct {
     private final String productCode;
+    private final String clientId;
 }
