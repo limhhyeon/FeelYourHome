@@ -5,6 +5,7 @@ package com.github.individualproject.config.mqtt;
 import com.github.individualproject.repository.userProduct.UserProductRepository;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -20,6 +21,7 @@ import org.springframework.messaging.MessageChannel;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class MqttConfig {
     private final UserProductRepository userProductRepository;
     private MqttPahoMessageDrivenChannelAdapter adapter;
@@ -71,47 +73,39 @@ public class MqttConfig {
         adapter.setOutputChannelName("mqttInputChannel");
         adapter.setCompletionTimeout(5000);
         adapter.setQos(1);
-        new Thread(() -> {
-            while (!adapter.isRunning()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+        adapter.start(); // 명시적 시작
+        log.info("MqttPahoMessageDrivenChannelAdapter 빈 생성 및 시작 완료");
+        int retries = 5;
+        while (!adapter.isRunning() && retries > 0) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            retries--;
+        }
+        if (!adapter.isRunning()) {
+            log.error("MQTT 어댑터가 시작되지 않음. 구독 초기화 실패.");
+            return adapter;
+        }
+
+        int page = 0;
+        int size = 1000;
+        Page<String> topics;
+        do {
+            topics = userProductRepository.findActiveMqttTopicsByActive(PageRequest.of(page, size));
+            for (String topic : topics) {
+                if (!topic.isEmpty()) {
+                    adapter.addTopic(topic);
+                    log.info("복원된 구독: {}", topic);
                 }
             }
-
-            int page = 0;
-            int size = 1000;
-            Page<String> topics;
-            do {
-                topics = userProductRepository.findActiveMqttTopicsByActive(PageRequest.of(page, size));
-                for (String topic : topics) {
-                    if (!topic.isEmpty()) {
-                        adapter.addTopic(topic);
-                        System.out.println("복원된 구독: " + topic);
-                    }
-                }
-                page++;
-            } while (topics.hasNext());
-
-            System.out.println("모든 구독 복원 완료");
-        }).start();
+            page++;
+        } while (topics.hasNext());
+        log.info("모든 구독 복원 완료");
 
         return adapter;
     }
-    @PreDestroy
-    public void destroy() {
-        if (adapter != null && adapter.isRunning()) {
-            String[] currentTopics = adapter.getTopic();
-            if (currentTopics != null) {
-                for (String topic : currentTopics) {
-                    adapter.removeTopic(topic); // 명시적 구독 해제
-                    System.out.println("구독 해제: " + topic);
-                }
-            }
-            adapter.stop();
-            System.out.println("MqttAdapter 종료: 구독 정리 완료");
-        }
-    }
+
 
 }

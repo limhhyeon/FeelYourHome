@@ -10,6 +10,8 @@ import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.stereotype.Service;
 
@@ -45,13 +47,7 @@ public class MqttService {
             @Override
             public void connectionLost(Throwable cause) {
                 log.warn("상태 MQTT 연결 끊김: {}", cause.getMessage());
-                try {
-                    mqttStatusClient.reconnect();
-                    mqttStatusClient.subscribe("device/status/#", 1);
-                    log.info("상태 MQTT 재연결 성공");
-                } catch (MqttException e) {
-                    log.error("재연결 실패: {}", e.getMessage());
-                }
+
             }
 
             @Override
@@ -61,11 +57,8 @@ public class MqttService {
                 log.info("상태 메시지 수신 - 토픽: {}, 페이로드: {}", topic, payload);
 
                 // clientId로 UserProduct 조회 (매핑 필요)
-                UserProduct userProduct = userProductRepository.findByClientId(clientId)
-                        .orElse(null);
-                if (userProduct== null){
-                    return;
-                }
+                UserProduct userProduct = redisUtil.getUserProductByClientId(clientId);
+
                 String redisKey = REDIS_KEY_PREFIX + clientId;
                 // 상태 업데이트
                 if ("OFF".equals(payload)) {
@@ -74,7 +67,7 @@ public class MqttService {
                     redisUtil.addToSet(CHANGED_CLIENTS_KEY, clientId); // RedisUtil로 Set 추가
                     mqttAdapter.removeTopic(userProduct.getMqttTopic());
                 } else if ("ON".equals(payload)) {
-                    redisUtil.setData(redisKey, Status.INACTIVE.name(), 86400);
+                    redisUtil.setData(redisKey, Status.ACTIVE.name(), 86400);
                     log.info("기계 {} 켜짐 상태로 업데이트", clientId);
                     redisUtil.addToSet(CHANGED_CLIENTS_KEY, clientId); // RedisUtil로 Set 추가
                     mqttAdapter.addTopic(userProduct.getMqttTopic());
@@ -82,18 +75,20 @@ public class MqttService {
                     log.warn("알 수 없는 상태: {}", payload);
                     return;
                 }
-
-                userProductRepository.save(userProduct);
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {}
         });
     }
+    @EventListener
+    public void onApplicationEvent(ContextClosedEvent event) {
+        log.info("컨텍스트 종료 이벤트 수신 - Redis 상태 저장 시작");
+        saveRedisStateToDb();
+    }
     @PreDestroy
     public void destroy() {
         log.info("MqttService 종료 시작");
-        saveRedisStateToDb();    // Redis 상태 저장
         cleanupMqttConnection();
     }
     private void cleanupMqttConnection() {
@@ -116,6 +111,7 @@ public class MqttService {
             for (String clientId : changedClientIds) {
                 String redisKey = REDIS_KEY_PREFIX + clientId;
                 String statusStr = redisUtil.getData(redisKey);
+                log.info("키 값 : " + statusStr);
                 if (statusStr != null) {
                     UserProduct userProduct = userProductRepository.findByClientId(clientId).orElse(null);
                     if (userProduct != null) {

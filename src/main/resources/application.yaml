@@ -31,6 +31,11 @@ spring:
     username: ENC(wN8PJa6sdt2a/vP0XYlM4A==)
     password: ENC(V1CreIfUoLKDwcUub8DQu9ZRSymbzxaw)
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
   data:
     redis:
       host: localhost

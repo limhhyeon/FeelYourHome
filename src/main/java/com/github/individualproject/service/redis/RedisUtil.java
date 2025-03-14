@@ -30,6 +30,7 @@ public class RedisUtil {
     private final UserProductRepository userProductRepository;
     private static final String CACHE_PREFIX = "sensor:";
     private static final String CACHE_USERPRODUCT ="user_product:";
+    private static final String CACHE_USERPRODUCTBYCLIENTID ="user_product_client:";
     private static final long CACHE_TTL_SECONDS = 24 * 60 * 60;
 
     public String getData(String key){
@@ -109,6 +110,20 @@ public class RedisUtil {
             userProductRedisTemplate.opsForValue().set(cacheKey,findUserProduct,expireDuration);
             return findUserProduct;
         }
+        return userProduct;
+    }
+    public UserProduct getUserProductByClientId(String clientId){
+        String cacheKey  = CACHE_USERPRODUCT + clientId;
+        UserProduct userProduct = userProductRedisTemplate.opsForValue().get(cacheKey);
+        if (userProduct == null){
+            UserProduct findUserProduct = userProductRepository.findByClientId(clientId)
+                    .orElseThrow(()-> new NotFoundException("토픽에 해당하는 상품을 찾을 수 없거나 유저가 일치하지 않습니다."));
+            Duration expireDuration= Duration.ofSeconds(CACHE_TTL_SECONDS);
+            userProductRedisTemplate.opsForValue().set(cacheKey,findUserProduct,expireDuration);
+            log.info("여기서 불러오니?2");
+            return findUserProduct;
+        }
+        log.info("여기서 불러오니?");
         return userProduct;
     }
 

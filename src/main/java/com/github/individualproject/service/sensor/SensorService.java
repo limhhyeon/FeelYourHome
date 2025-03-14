@@ -51,11 +51,7 @@ public class SensorService {
 
         SensorResponse sensorResponse = objectMapper.readValue(payload, SensorResponse.class);
         log.info("temp: {}, humid: {}", sensorResponse.getTemp(), sensorResponse.getHumid());
-//        UserProduct userProduct = userProductRepository.findByMqttTopic(topic)
-//                .orElseThrow(() -> new NotFoundException("구독된 토픽에 해당하는 UserProduct 없음: " + topic));
 
-//        SensorData sensorData = SensorData.of(userProduct,sensorResponse);
-//        sensorDataRepository.save(sensorData);
         redisUtil.addSensorResponse(topic,sensorResponse);
     }
 
