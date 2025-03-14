@@ -46,6 +46,7 @@ public class Oauth2Controller {
     private final UserRepository userRepository;
 
 
+    //카카오 리다이렉트
     @GetMapping("/oauth2/login/kakao")
     public void kakaoLoginRedirect(HttpServletResponse response)  {
         oauth2Service.redirect(response);
