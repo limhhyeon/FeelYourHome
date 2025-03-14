@@ -28,6 +28,7 @@ public class RedisUtil {
     private final RedisTemplate<String,UserProduct> userProductRedisTemplate;
     private final UserProductRepository userProductRepository;
     private static final String CACHE_PREFIX = "sensor:";
+    private static final String CACHE_USERPRODUCT ="user_product:";
     private static final long CACHE_TTL_SECONDS = 24 * 60 * 60;
 
     public String getData(String key){
@@ -62,20 +63,38 @@ public class RedisUtil {
         }
         return allSensorResponse;
     }
+    // 토픽별 SensorResponse 조회
+    public List<SensorResponse> getSensorResponsesByTopic(String topic) {
+        String sensorKey = CACHE_PREFIX + topic;
+        List<SensorResponse> responses = sensorResponseRedisTemplate.opsForList().range(sensorKey, 0, -1);
+        return responses != null ? responses : Collections.emptyList();
+    }
 
-//    public UserProduct getUserProductByTopic(String topic){
-//        String cacheKey  = CACHE_PREFIX + topic;
-//        UserProduct userProduct = userProductRedisTemplate.opsForValue().get(cacheKey);
-//        if (userProduct == null){
-//            UserProduct findUserProduct = userProductRepository.findByMqttTopic(topic)
-//                    .orElseThrow(()-> new NotFoundException("토픽에 해당하는 상품을 찾을 수 없거나 유저가 일치하지 않습니다."));
-//            Duration expireDuration= Duration.ofSeconds(CACHE_TTL_SECONDS);
-//            userProductRedisTemplate.opsForValue().set(cacheKey,findUserProduct,expireDuration);
-//
-//            return findUserProduct;
-//        }
-//        return userProduct;
-//    }
+    // 토픽별 데이터 삭제
+    public void deleteSensorResponsesByTopic(String topic) {
+        String sensorKey = CACHE_PREFIX + topic;
+        sensorResponseRedisTemplate.delete(sensorKey);
+    }
+
+    // 모든 토픽 키 조회
+    public Set<String> getAllSensorKeys() {
+        String pattern = CACHE_PREFIX + "*";
+        Set<String> keys = sensorResponseRedisTemplate.keys(pattern);
+        return keys != null ? keys : Collections.emptySet();
+    }
+
+    public UserProduct getUserProductByTopic(String topic){
+        String cacheKey  = CACHE_USERPRODUCT + topic;
+        UserProduct userProduct = userProductRedisTemplate.opsForValue().get(cacheKey);
+        if (userProduct == null){
+            UserProduct findUserProduct = userProductRepository.findByMqttTopic(topic)
+                    .orElseThrow(()-> new NotFoundException("토픽에 해당하는 상품을 찾을 수 없거나 유저가 일치하지 않습니다."));
+            Duration expireDuration= Duration.ofSeconds(CACHE_TTL_SECONDS);
+            userProductRedisTemplate.opsForValue().set(cacheKey,findUserProduct,expireDuration);
+            return findUserProduct;
+        }
+        return userProduct;
+    }
 
 
 }

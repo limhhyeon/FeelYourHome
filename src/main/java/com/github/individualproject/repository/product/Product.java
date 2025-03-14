@@ -1,6 +1,7 @@
 package com.github.individualproject.repository.product;
 
 import com.github.individualproject.repository.base.BaseEntity;
+import com.github.individualproject.web.dto.product.request.BuyProduct;
 import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,9 +22,9 @@ public class Product extends BaseEntity {
     @Column(name = "product_code", nullable = false, length = 50, unique = true)
     private String productCode;
 
-    public static Product from(RegistrationProduct registrationProduct){
+    public static Product from(BuyProduct buyProduct){
         return Product.builder()
-                .productCode(registrationProduct.getProductCode())
+                .productCode(buyProduct.getProductCode())
                 .build();
     }
 

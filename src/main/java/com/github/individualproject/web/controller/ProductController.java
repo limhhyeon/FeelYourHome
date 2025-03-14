@@ -3,6 +3,7 @@ package com.github.individualproject.web.controller;
 import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.product.ProductService;
 import com.github.individualproject.web.dto.ResponseDto;
+import com.github.individualproject.web.dto.product.request.BuyProduct;
 import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +19,8 @@ public class ProductController {
 
     //실제 상품 구매시 상품이 db에 등록되는 api 임시로 설정하는 가정
     @PostMapping("/buy")
-    public ResponseDto buyProduct(@RequestBody RegistrationProduct registrationProduct){
-        return productService.buyProductResult(registrationProduct);
+    public ResponseDto buyProduct(@RequestBody BuyProduct buyProduct){
+        return productService.buyProductResult(buyProduct);
     }
     //유저가 산 상품에 대해 등록하는 api
     @PostMapping("")

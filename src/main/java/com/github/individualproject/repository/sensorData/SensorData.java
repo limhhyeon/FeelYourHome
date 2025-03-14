@@ -34,12 +34,20 @@ public class SensorData {
     @Column(name = "recorded_at", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime recordedAt;
 
-    public static SensorData of(UserProduct userProduct, SensorResponse sensorResponse){
+//    public static SensorData of(UserProduct userProduct, SensorResponse sensorResponse){
+//        return SensorData.builder()
+//                .userProduct(userProduct)
+//                .temperature(BigDecimal.valueOf(sensorResponse.getTemp()))
+//                .humidity(BigDecimal.valueOf(sensorResponse.getHumid()))
+//                .recordedAt(LocalDateTime.now())
+//                .build();
+//    }
+    public static SensorData of(UserProduct userProduct, BigDecimal temperature, BigDecimal humidity, LocalDateTime recordedAt) {
         return SensorData.builder()
                 .userProduct(userProduct)
-                .temperature(BigDecimal.valueOf(sensorResponse.getTemp()))
-                .humidity(BigDecimal.valueOf(sensorResponse.getHumid()))
-                .recordedAt(LocalDateTime.now())
+                .temperature(temperature)
+                .humidity(humidity)
+                .recordedAt(recordedAt)
                 .build();
     }
 

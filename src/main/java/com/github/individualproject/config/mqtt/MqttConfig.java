@@ -4,7 +4,9 @@ package com.github.individualproject.config.mqtt;
 
 import com.github.individualproject.repository.userProduct.UserProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,19 @@ import org.springframework.messaging.MessageChannel;
 @RequiredArgsConstructor
 public class MqttConfig {
     private final UserProductRepository userProductRepository;
+    @Bean
+    public MqttClient mqttStatusClient() throws MqttException {
+        String broker = "tcp://43.202.80.85:1883";
+        String clientId = "ServerStatusClient_" + System.currentTimeMillis(); // 고유 ID
+        MqttClient client = new MqttClient(broker, clientId);
+
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        client.connect(options);
+
+
+        return client;
+    }
 
     @Bean
     public DefaultMqttPahoClientFactory mqttClientFactory() {
@@ -64,7 +79,7 @@ public class MqttConfig {
             int size = 1000;
             Page<String> topics;
             do {
-                topics = userProductRepository.findAllMqttTopics(PageRequest.of(page, size));
+                topics = userProductRepository.findActiveMqttTopicsByActive(PageRequest.of(page, size));
                 for (String topic : topics) {
                     if (!topic.isEmpty()) {
                         adapter.addTopic(topic);

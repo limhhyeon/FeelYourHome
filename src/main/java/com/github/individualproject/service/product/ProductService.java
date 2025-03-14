@@ -10,6 +10,7 @@ import com.github.individualproject.repository.userProduct.UserProductRepository
 import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.web.dto.ResponseDto;
+import com.github.individualproject.web.dto.product.request.BuyProduct;
 import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import com.github.individualproject.web.dto.product.response.MyProductList;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,13 @@ public class ProductService {
     private final MqttPahoMessageDrivenChannelAdapter mqttAdapter;
 
     //상품 구매
-    public ResponseDto buyProductResult(RegistrationProduct registrationProduct)  {
-        if (productRepository.existsByProductCode(registrationProduct.getProductCode())){
-            throw new BadRequestException("이미 판매가 진행된 상품 코드 : " + registrationProduct.getProductCode()+ " 입니다.");
+    public ResponseDto buyProductResult(BuyProduct buyProduct)  {
+        if (productRepository.existsByProductCode(buyProduct.getProductCode())){
+            throw new BadRequestException("이미 판매가 진행된 상품 코드 : " + buyProduct.getProductCode()+ " 입니다.");
         }
-        Product product = Product.from(registrationProduct);
+        Product product = Product.from(buyProduct);
         productRepository.save(product);
-        return new ResponseDto(HttpStatus.CREATED.value(), registrationProduct.getProductCode() + "가 정상적으로 구매되었습니다.");
+        return new ResponseDto(HttpStatus.CREATED.value(), buyProduct.getProductCode() + "가 정상적으로 구매되었습니다.");
     }
 
     //내가 산 상품 등록
@@ -57,9 +58,10 @@ public class ProductService {
             throw new BadRequestException("이미 등록한 상품입니다.");
         }
         String topic = "dht22/data/lhh/"+productCode;
+        String clientId = registrationProduct.getClientId();
 
         //상품 등록
-        UserProduct userProduct = UserProduct.of(user,product,topic);
+        UserProduct userProduct = UserProduct.of(user,product,topic,clientId);
         userProductRepository.save(userProduct);
 
         // MQTT 토픽 생성 및 구독 추가

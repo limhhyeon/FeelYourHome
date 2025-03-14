@@ -18,6 +18,10 @@ public interface UserProductRepository extends JpaRepository<UserProduct,Long> {
     //전체 불러오는 건 db 부담이 크므로 필요한 필드만 불러오기
     @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.mqttTopic IS NOT NULL")
     Page<String> findAllMqttTopics(Pageable pageable);
+    @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.status = 'ACTIVE'")
+    Page<String> findActiveMqttTopicsByActive(Pageable pageable);
 
     Optional<UserProduct> findByMqttTopic(String mqttTopic);
+
+    Optional<UserProduct> findByClientId(String clientId);
 }
