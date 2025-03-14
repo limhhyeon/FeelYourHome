@@ -3,6 +3,7 @@ package com.github.individualproject.config.mqtt;
 //import com.github.iottest.config.MqttProperties;
 
 import com.github.individualproject.repository.userProduct.UserProductRepository;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -21,6 +22,7 @@ import org.springframework.messaging.MessageChannel;
 @RequiredArgsConstructor
 public class MqttConfig {
     private final UserProductRepository userProductRepository;
+    private MqttPahoMessageDrivenChannelAdapter adapter;
     @Bean
     public MqttClient mqttStatusClient() throws MqttException {
         String broker = "tcp://43.202.80.85:1883";
@@ -41,6 +43,8 @@ public class MqttConfig {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(new String[]{"tcp://43.202.80.85"});
         options.setAutomaticReconnect(true);
+        options.setConnectionTimeout(10); // 연결 타임아웃 설정
+        options.setKeepAliveInterval(60); // Keep-alive 간격 설정
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -61,13 +65,14 @@ public class MqttConfig {
 //    }
     @Bean
     public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
-        MqttPahoMessageDrivenChannelAdapter adapter =
+        MqttPahoMessageDrivenChannelAdapter adapters =
                 new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
+        this.adapter = adapters;
         adapter.setOutputChannelName("mqttInputChannel");
         adapter.setCompletionTimeout(5000);
         adapter.setQos(1);
         new Thread(() -> {
-            while (!adapter.isRunning()) {
+            while (!adapters.isRunning()) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -82,7 +87,7 @@ public class MqttConfig {
                 topics = userProductRepository.findActiveMqttTopicsByActive(PageRequest.of(page, size));
                 for (String topic : topics) {
                     if (!topic.isEmpty()) {
-                        adapter.addTopic(topic);
+                        adapters.addTopic(topic);
                         System.out.println("복원된 구독: " + topic);
                     }
                 }
@@ -92,7 +97,14 @@ public class MqttConfig {
             System.out.println("모든 구독 복원 완료");
         }).start();
 
-        return adapter;
+        return adapters;
+    }
+    @PreDestroy
+    public void destroy() {
+        if (adapter != null && adapter.isRunning()) {
+            adapter.stop();
+            System.out.println("MqttAdapter 종료: 구독 정리 완료");
+        }
     }
 
 }
