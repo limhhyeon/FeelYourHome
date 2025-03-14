@@ -22,7 +22,7 @@ public class UserProduct extends BaseEntity {
     @Column(name = "user_product_id")
     private Long userProductId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 

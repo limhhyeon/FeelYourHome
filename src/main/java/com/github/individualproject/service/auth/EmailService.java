@@ -1,5 +1,6 @@
 package com.github.individualproject.service.auth;
 
+import com.github.individualproject.service.redis.RedisUtil;
 import com.github.individualproject.web.dto.ResponseDto;
 import com.github.individualproject.web.dto.auth.EmailAuthNumCheck;
 import jakarta.mail.MessagingException;

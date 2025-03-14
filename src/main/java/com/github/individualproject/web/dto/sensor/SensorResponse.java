@@ -2,6 +2,8 @@ package com.github.individualproject.web.dto.sensor;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @ToString
@@ -10,4 +12,5 @@ import lombok.*;
 public class SensorResponse {
     private float temp;
     private float humid;
+    private LocalDateTime localDateTime = LocalDateTime.now();
 }
