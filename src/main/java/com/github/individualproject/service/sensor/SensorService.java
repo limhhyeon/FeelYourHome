@@ -6,6 +6,7 @@ import com.github.individualproject.repository.sensorData.SensorData;
 import com.github.individualproject.repository.sensorData.SensorDataRepository;
 import com.github.individualproject.repository.userProduct.UserProduct;
 import com.github.individualproject.repository.userProduct.UserProductRepository;
+import com.github.individualproject.service.auth.EmailService;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.service.redis.RedisUtil;
 import com.github.individualproject.web.dto.sensor.SensorResponse;
@@ -34,6 +35,7 @@ public class SensorService {
     private final RedisUtil redisUtil;
     private static final String CACHE_PREFIX = "sensor:";
     private static final long TWO_HOURS_IN_MILLIS = 2 * 60 * 60 * 1000;
+    private final EmailService emailService;
 
 //    @ServiceActivator(inputChannel = "mqttInputChannel")
 //    public void handel(String message) throws JsonProcessingException {
@@ -51,9 +53,35 @@ public class SensorService {
 
         SensorResponse sensorResponse = objectMapper.readValue(payload, SensorResponse.class);
         log.info("temp: {}, humid: {}", sensorResponse.getTemp(), sensorResponse.getHumid());
+        // 이전 데이터 가져오기
+        SensorResponse previousResponse = redisUtil.getPreviousSensorResponse(topic);
+
+        // UserProduct과 User 정보 조회
+        UserProduct userProduct = redisUtil.getUserProductByTopic(topic);
+
+
+        // 이전 데이터가 있으면 비교
+        if (previousResponse != null && userProduct.getIsReceiveNotification()) {
+            BigDecimal desiredThreshold = userProduct.getTemperatureDiffThreshold();
+            BigDecimal previousTemp = BigDecimal.valueOf(previousResponse.getTemp());
+            BigDecimal currentTemp = BigDecimal.valueOf(sensorResponse.getTemp());
+            BigDecimal difference = currentTemp.subtract(previousTemp).abs();
+
+
+            if (difference.compareTo(desiredThreshold) > 0) {
+                log.warn("온도 변화 발생 - topic: {}, previous: {}, current: {}, threshold: {}, diff: {}",
+                        topic, previousTemp, currentTemp, desiredThreshold, difference);
+                emailService.sendTempResult(userProduct.getUser().getEmail(), previousTemp,currentTemp, desiredThreshold);
+            }
+        } else {
+            log.info("첫 데이터 수신, 비교 생략: {}", topic);
+        }
 
         redisUtil.addSensorResponse(topic,sensorResponse);
+        // 최신 데이터로 덮어씌우기
+        redisUtil.addSensorResponseLatest(topic, sensorResponse);
     }
+
 
     @Scheduled(cron = "0 0 0/2 * * *") // 2시간마다 실행
     public void calculateAndSaveSensorAverages() {

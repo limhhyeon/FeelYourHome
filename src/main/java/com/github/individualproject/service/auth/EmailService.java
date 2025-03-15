@@ -12,6 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -31,6 +33,10 @@ public class EmailService {
         return new ResponseDto(HttpStatus.OK.value(),"이메일 전송 성공");
 
     }
+    @Transactional
+    public void sendTempResult(String email, BigDecimal before, BigDecimal after,BigDecimal temp) {
+        sender.send(createMessageByTemp(email,before,after,temp));
+    }
     public MimeMessage createMessage(String email, int sendNum){
 
         //메시지 생성
@@ -40,6 +46,25 @@ public class EmailService {
             mimeMessage.setRecipients(MimeMessage.RecipientType.TO,email);
             mimeMessage.setSubject("[이메일 인증 번호입니다.]");
             String body = sendNum + "";
+            mimeMessage.setText(body,"UTF-8", "html");
+
+        }
+        catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return mimeMessage;
+    }
+    public MimeMessage createMessageByTemp(String email, BigDecimal before, BigDecimal after,BigDecimal temp){
+
+        //메시지 생성
+        MimeMessage mimeMessage = sender.createMimeMessage();
+        try{
+            mimeMessage.setFrom(senderEmail);
+            mimeMessage.setRecipients(MimeMessage.RecipientType.TO,email);
+            mimeMessage.setSubject("[온도 차이 발생]");
+            String body = "이전 온도 : " + before + "/ 현재 온도 : " + after +"입니다. 설정하신 온도"+temp+"만큼 차이가 발생하여 메일 전송드립니다.";
             mimeMessage.setText(body,"UTF-8", "html");
 
         }

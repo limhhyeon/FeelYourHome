@@ -42,6 +42,16 @@ public class RedisUtil {
         Duration expireDuration= Duration.ofSeconds(duration);
         valueOperations.set(key, value, expireDuration);
     }
+    public void addSensorResponseLatest(String topic, SensorResponse sensorResponse) {
+        String latestKey = CACHE_PREFIX + topic + ":latest";
+        log.info("최신 sensorKey: {}", latestKey);
+        sensorResponseRedisTemplate.opsForValue().set(latestKey, sensorResponse);
+    }
+    // 신규: 이전 데이터 가져오기
+    public SensorResponse getPreviousSensorResponse(String topic) {
+        String latestKey = CACHE_PREFIX + topic + ":latest";
+        return sensorResponseRedisTemplate.opsForValue().get(latestKey);
+    }
     public void addSensorResponse(String topic,SensorResponse sensorResponse) {
         String sensorKey = CACHE_PREFIX + topic;
         log.info("sensorKey : "+sensorKey);
