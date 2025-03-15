@@ -82,7 +82,7 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword())
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            User user = userRepository.findByEmailFetchJoin(login.getEmail())
+            User user = userRepository.findByEmailWithRoles(login.getEmail())
                     .orElseThrow(() -> new NotFoundException("User를 찾을 수 없습니다."));
             List<String> roles = user.getUserRoles()
                     .stream().map(UserRole::getRole)
@@ -130,7 +130,7 @@ public ResponseDto refreshToken(String accessToken, HttpServletResponse response
         // 만약 이메일을 추출할 수 없다면, 토큰이 잘못되었거나 만료되었음을 의미
         throw new TokenValidateException("토큰이 잘못되었습니다.");
     }
-    User user = userRepository.findByEmailFetchJoin(email)
+    User user = userRepository.findByEmailWithRoles(email)
             .orElseThrow(()->new NotFoundException(email+ "에 해당하는 유저가 존재하지 않습니다."));
     RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
             .orElseThrow(()-> new NotFoundException(user.getName() + "님의 refresh 토큰이 존재하지 않습니다."));
