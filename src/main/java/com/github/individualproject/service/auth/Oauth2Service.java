@@ -60,7 +60,7 @@ public class Oauth2Service {
 
     private String isSocialLoginResult(SocialLoginUser kakaoUserInfo) {
         if (userRepository.existsByEmail(kakaoUserInfo.getEmail())){
-            User user = userRepository.findByEmailFetchJoin(kakaoUserInfo.getEmail())
+            User user = userRepository.findByEmailWithRoles(kakaoUserInfo.getEmail())
                     .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
             List<String> roles = user.getUserRoles().stream()
                     .map(UserRole::getRole)
@@ -81,7 +81,7 @@ public class Oauth2Service {
             UserRole userRole = UserRole.createUserRole(role,user);
             userRoleRepository.save(userRole);
             System.out.println("저장된 유저입니다. : "+saveUser.getUserRoles());
-            User findUser = userRepository.findByEmailFetchJoin(saveUser.getEmail())
+            User findUser = userRepository.findByEmailWithRoles(saveUser.getEmail())
                     .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
             List<String> roles = userRoleRepository.findUserRolesByUser(findUser)
                     .stream()

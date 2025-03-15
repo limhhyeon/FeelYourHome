@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface SensorDataRepository extends JpaRepository<SensorData,Long>,CustomSensorDataRepository {
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM SensorData s WHERE s.recordedAt < :cutoffDate")
-    void deleteOldSensorData(@Param("cutoffDate") LocalDateTime cutoffDate);
+public interface SensorDataRepository extends JpaRepository<SensorData,Long>,CustomSensorDataRepository,QSensorDataRepository {
+//    @Modifying
+//    @Transactional
+//    @Query("DELETE FROM SensorData s WHERE s.recordedAt < :cutoffDate")
+//    void deleteOldSensorData(@Param("cutoffDate") LocalDateTime cutoffDate);
 }

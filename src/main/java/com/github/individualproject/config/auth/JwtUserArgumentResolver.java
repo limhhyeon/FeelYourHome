@@ -49,7 +49,7 @@ public class JwtUserArgumentResolver implements HandlerMethodArgumentResolver {
         CustomUserDetails userDetails = (CustomUserDetails) principal;
 
         // 데이터베이스에서 유저 조회
-        return userRepository.findByEmailFetchJoin(userDetails.getUsername())
+        return userRepository.findByEmailWithRoles(userDetails.getUsername())
                 .orElseThrow(() -> new NotFoundException("유저를 찾을 수 없습니다."));
     }
 }

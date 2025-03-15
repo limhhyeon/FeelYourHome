@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserProductRepository extends JpaRepository<UserProduct,Long> {
+public interface UserProductRepository extends JpaRepository<UserProduct,Long> ,QUserProductRepository{
     Boolean existsByProduct(Product product);
     Page<UserProduct> findAllByUser(User user, Pageable pageable);
-    //전체 불러오는 건 db 부담이 크므로 필요한 필드만 불러오기
-    @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.mqttTopic IS NOT NULL")
-    Page<String> findAllMqttTopics(Pageable pageable);
-    @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.status = 'ACTIVE'")
-    Page<String> findActiveMqttTopicsByActive(Pageable pageable);
+//    //전체 불러오는 건 db 부담이 크므로 필요한 필드만 불러오기
+//    @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.mqttTopic IS NOT NULL")
+//    Page<String> findAllMqttTopics(Pageable pageable);
+//    @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.status = 'ACTIVE'")
+//    Page<String> findActiveMqttTopicsByActive(Pageable pageable);
 
 
     Optional<UserProduct> findByMqttTopic(String mqttTopic);
