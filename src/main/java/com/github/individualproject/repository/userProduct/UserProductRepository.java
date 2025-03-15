@@ -21,6 +21,7 @@ public interface UserProductRepository extends JpaRepository<UserProduct,Long> {
     @Query("SELECT up.mqttTopic FROM UserProduct up WHERE up.status = 'ACTIVE'")
     Page<String> findActiveMqttTopicsByActive(Pageable pageable);
 
+
     Optional<UserProduct> findByMqttTopic(String mqttTopic);
 
     Optional<UserProduct> findByClientId(String clientId);

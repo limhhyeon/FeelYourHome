@@ -11,6 +11,8 @@ import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.web.dto.ResponseDto;
 import com.github.individualproject.web.dto.product.request.BuyProduct;
+import com.github.individualproject.web.dto.product.request.ChangeNotification;
+import com.github.individualproject.web.dto.product.request.ChangeTemp;
 import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import com.github.individualproject.web.dto.product.response.MyProductList;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +85,27 @@ public class ProductService {
         Page<MyProductList> myProductLists = userProducts.map(MyProductList::from);
         return new ResponseDto(HttpStatus.OK.value(),"내 등록 상품 리스트 조회 성공",myProductLists);
 
+
+    }
+
+    public ResponseDto changeTempResult(CustomUserDetails customUserDetails, ChangeTemp changeTemp) {
+        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
+                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+        UserProduct userProduct = userProductRepository.findById(changeTemp.getUserProductId())
+                .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
+        userProduct.changeTemp(changeTemp.getChangeTemp());
+        userProductRepository.save(userProduct);
+        return new ResponseDto(HttpStatus.OK.value(),"희망 온도 차이 : " +changeTemp.getChangeTemp()+"로 변경되었습니다.");
+    }
+
+    public ResponseDto notificationChangeResult(CustomUserDetails customUserDetails, ChangeNotification changeNotification) {
+        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
+                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+        UserProduct userProduct = userProductRepository.findById(changeNotification.getUserProductId())
+                .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
+        userProduct.changeIsNotification(changeNotification.getIs());
+        userProductRepository.save(userProduct);
+        return new ResponseDto(HttpStatus.OK.value(),"알림 설정이 : " +changeNotification.getIs()+"로 변경되었습니다.");
 
     }
 }

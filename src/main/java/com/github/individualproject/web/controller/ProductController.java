@@ -4,6 +4,8 @@ import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.product.ProductService;
 import com.github.individualproject.web.dto.ResponseDto;
 import com.github.individualproject.web.dto.product.request.BuyProduct;
+import com.github.individualproject.web.dto.product.request.ChangeNotification;
+import com.github.individualproject.web.dto.product.request.ChangeTemp;
 import com.github.individualproject.web.dto.product.request.RegistrationProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,5 +33,13 @@ public class ProductController {
     @GetMapping("")
     public ResponseDto myProductList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam(defaultValue = "0",value = "page",required = false) Integer page){
         return productService.myProductListResult(customUserDetails,page);
+    }
+    @PutMapping("/temp")
+    public ResponseDto myTempChange(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChangeTemp changeTemp){
+        return productService.changeTempResult(customUserDetails,changeTemp);
+    }
+    @PutMapping("/notification")
+    public ResponseDto notificationChange(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChangeNotification changeNotification){
+        return productService.notificationChangeResult(customUserDetails,changeNotification);
     }
 }
