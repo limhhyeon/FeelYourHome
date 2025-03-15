@@ -1,5 +1,7 @@
 package com.github.individualproject.web.controller;
 
+import com.github.individualproject.repository.user.CurrentUser;
+import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.product.ProductService;
 import com.github.individualproject.web.dto.ResponseDto;
@@ -26,20 +28,20 @@ public class ProductController {
     }
     //유저가 산 상품에 대해 등록하는 api
     @PostMapping("")
-    public ResponseDto productRegistration(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody RegistrationProduct registrationProduct){
-        return productService.productRegistrationResult(customUserDetails,registrationProduct);
+    public ResponseDto productRegistration(@CurrentUser User user, @RequestBody RegistrationProduct registrationProduct){
+        return productService.productRegistrationResult(user,registrationProduct);
     }
     //자신이 등록 한 상품 리스트 보기
     @GetMapping("")
-    public ResponseDto myProductList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam(defaultValue = "0",value = "page",required = false) Integer page){
-        return productService.myProductListResult(customUserDetails,page);
+    public ResponseDto myProductList(@CurrentUser User user,@RequestParam(defaultValue = "0",value = "page",required = false) Integer page){
+        return productService.myProductListResult(user,page);
     }
     @PutMapping("/temp")
-    public ResponseDto myTempChange(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChangeTemp changeTemp){
-        return productService.changeTempResult(customUserDetails,changeTemp);
+    public ResponseDto myTempChange(@CurrentUser User user, @RequestBody ChangeTemp changeTemp){
+        return productService.changeTempResult(user,changeTemp);
     }
     @PutMapping("/notification")
-    public ResponseDto notificationChange(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChangeNotification changeNotification){
-        return productService.notificationChangeResult(customUserDetails,changeNotification);
+    public ResponseDto notificationChange(@CurrentUser User user, @RequestBody ChangeNotification changeNotification){
+        return productService.notificationChangeResult(user,changeNotification);
     }
 }

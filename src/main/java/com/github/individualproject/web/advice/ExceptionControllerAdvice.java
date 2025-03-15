@@ -1,9 +1,6 @@
 package com.github.individualproject.web.advice;
 
-import com.github.individualproject.service.exception.BadRequestException;
-import com.github.individualproject.service.exception.CAuthenticationEntryPointException;
-import com.github.individualproject.service.exception.NotAcceptException;
-import com.github.individualproject.service.exception.NotFoundException;
+import com.github.individualproject.service.exception.*;
 import com.github.individualproject.web.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,5 +56,11 @@ public class ExceptionControllerAdvice {
                 .orElse("잘못된 요청입니다.");
         log.error("클라이언트 요청 이후 DB검색 중 발생한 에러입니다. " + errorMessage);
         return new ResponseDto(HttpStatus.BAD_REQUEST.value(),errorMessage);
+    }
+    @ExceptionHandler(TokenValidateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDto handleTokenValidateException(TokenValidateException tve){
+        log.error("클라이언트 요청 중 문제 발생 " + tve.getMessage());
+        return new ResponseDto(HttpStatus.BAD_REQUEST.value(),tve.getMessage());
     }
 }

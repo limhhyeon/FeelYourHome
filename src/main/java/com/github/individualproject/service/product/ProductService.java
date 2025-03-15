@@ -53,9 +53,7 @@ public class ProductService {
 
     //내가 산 상품 등록
     @Transactional
-    public ResponseDto productRegistrationResult(CustomUserDetails customUserDetails, RegistrationProduct registrationProduct) {
-        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
-                .orElseThrow(()-> new NotFoundException("유저 정보가 없습니다."));
+    public ResponseDto productRegistrationResult(User user, RegistrationProduct registrationProduct) {
         String productCode = registrationProduct.getProductCode();
         //상품 코드 유효한지 확인
         Product product =productRepository.findByProductCode(productCode)
@@ -79,9 +77,7 @@ public class ProductService {
     }
 
     //내 상품 리스트 조회
-    public ResponseDto myProductListResult(CustomUserDetails customUserDetails,Integer page) {
-        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
-                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+    public ResponseDto myProductListResult(User user,Integer page) {
         Pageable pageable = PageRequest.of(page,10);
         Page<UserProduct> userProducts = userProductRepository.findAllByUser(user,pageable);
         Page<MyProductList> myProductLists = userProducts.map(MyProductList::from);
@@ -90,9 +86,7 @@ public class ProductService {
 
     }
 
-    public ResponseDto changeTempResult(CustomUserDetails customUserDetails, ChangeTemp changeTemp) {
-        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
-                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+    public ResponseDto changeTempResult(User user, ChangeTemp changeTemp) {
         UserProduct userProduct = userProductRepository.findById(changeTemp.getUserProductId())
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
         userProduct.changeTemp(changeTemp.getChangeTemp());
@@ -101,9 +95,7 @@ public class ProductService {
         return new ResponseDto(HttpStatus.OK.value(),"희망 온도 차이 : " +changeTemp.getChangeTemp()+"로 변경되었습니다.");
     }
 
-    public ResponseDto notificationChangeResult(CustomUserDetails customUserDetails, ChangeNotification changeNotification) {
-        User user = userRepository.findByEmailFetchJoin(customUserDetails.getEmail())
-                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+    public ResponseDto notificationChangeResult(User user, ChangeNotification changeNotification) {
         UserProduct userProduct = userProductRepository.findById(changeNotification.getUserProductId())
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
         userProduct.changeIsNotification(changeNotification.getIs());

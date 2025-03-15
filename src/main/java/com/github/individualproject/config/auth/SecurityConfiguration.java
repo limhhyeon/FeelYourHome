@@ -20,6 +20,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -27,10 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
 //    private final CustomOAuth2UserService customOAuth2UserService;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,18 +47,31 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().permitAll() // 모든 요청 허용
                 )
+                .cors(c-> c.configurationSource(corsConfig()))
                 .exceptionHandling((exception) -> exception
                         .authenticationEntryPoint(new CustomerAuthenticationEntryPoint())
                         .accessDeniedHandler(new CustomerAccessDeniedHandler()))
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//                .oauth2Login(oauth2 -> oauth2
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService)
-//
-//                        )
-//                        .successHandler(customAuthenticationSuccessHandler));
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+    private CorsConfigurationSource corsConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+//        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedOrigin("https://localhost:3000");
+        corsConfiguration.addAllowedOrigin("https://localhost:8080");
+        corsConfiguration.addAllowedOrigin("http://localhost:8080");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addExposedHeader("Set-Cookie");
+//        corsConfiguration.setExposedHeaders(Arrays.asList("Authorization", "Authorization-refresh", "token","Set-Cookie"));
+        corsConfiguration.setAllowedMethods(List.of("GET","PUT","POST","DELETE","OPTIONS"));
+        corsConfiguration.setMaxAge(1000L*60*60);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        return source;
     }
 
     @Bean
