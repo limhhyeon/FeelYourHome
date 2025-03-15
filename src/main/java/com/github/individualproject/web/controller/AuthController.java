@@ -1,5 +1,7 @@
 package com.github.individualproject.web.controller;
 
+import com.github.individualproject.repository.user.CurrentUser;
+import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.auth.AuthService;
 import com.github.individualproject.web.dto.ResponseDto;
@@ -28,12 +30,6 @@ public class AuthController {
         return authService.duplicateCheckResult(duplicateCheck);
     }
 
-//    @PostMapping("/login")
-//    public ResponseDto login(@RequestBody Login login, HttpServletResponse response){
-//        String token = authService.loginResult(login);
-//        response.setHeader("Authorization", "Bearer " + token);
-//        return new ResponseDto(HttpStatus.OK.value(), "로그인 성공");
-//    }
 
     @PostMapping("/login")
     public ResponseDto login(@RequestBody Login login, HttpServletResponse response) {
@@ -52,8 +48,8 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public String test(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        return customUserDetails.getEmail();
+    public String test(@CurrentUser User user){
+        return user.getEmail();
     }
 
 }
