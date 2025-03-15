@@ -33,10 +33,6 @@ public class EmailService {
         return new ResponseDto(HttpStatus.OK.value(),"이메일 전송 성공");
 
     }
-    @Transactional
-    public void sendTempResult(String email, BigDecimal before, BigDecimal after,BigDecimal temp) {
-        sender.send(createMessageByTemp(email,before,after,temp));
-    }
     public MimeMessage createMessage(String email, int sendNum){
 
         //메시지 생성
@@ -56,6 +52,47 @@ public class EmailService {
         }
         return mimeMessage;
     }
+    //습도에 대한 이메일 전송
+    @Transactional
+    public void sendHumidResult(String email, BigDecimal humid) {
+        sender.send(createMessageByHumid(email,humid));
+    }
+    //습도에 대한 이메일 메시지 생성
+    public MimeMessage createMessageByHumid(String email, BigDecimal humid){
+
+        //메시지 생성
+        MimeMessage mimeMessage = sender.createMimeMessage();
+        try{
+            mimeMessage.setFrom(senderEmail);
+            mimeMessage.setRecipients(MimeMessage.RecipientType.TO,email);
+            mimeMessage.setSubject("[습도 위험 상태]");
+            String body = "<html>" +
+                    "<body>" +
+                    "<h2 style='color: #e74c3c;'>습도 위험 상태 알림</h2>" +
+                    "<p style='font-size: 16px;'>현재 2시간 동안의 평균 습도가 위험 수치에 도달했습니다. 즉시 확인이 필요합니다!</p>" +
+                    "<p style='font-size: 18px; color: #333333;'>현재 평균 습도: <strong>" + humid + "%</strong></p>" +
+                    "<p style='font-size: 16px;'>상태: <span style='color: red; font-weight: bold;'>위험</span></p>" +
+                    "<p style='font-size: 14px; color: #777777;'>이 알림은 자동으로 발송된 메시지입니다. 정확한 상태 확인을 위해 시스템에서 제공하는 자료를 확인하세요.</p>" +
+                    "</body>" +
+                    "</html>";
+            mimeMessage.setText(body,"UTF-8", "html");
+
+        }
+        catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return mimeMessage;
+    }
+    //온도에 대한 이메일 전송
+    @Transactional
+    public void sendTempResult(String email, BigDecimal before, BigDecimal after,BigDecimal temp) {
+        sender.send(createMessageByTemp(email,before,after,temp));
+    }
+
+
+    //온도에 대한 이메일 메시지 생성
     public MimeMessage createMessageByTemp(String email, BigDecimal before, BigDecimal after,BigDecimal temp){
 
         //메시지 생성
@@ -64,7 +101,32 @@ public class EmailService {
             mimeMessage.setFrom(senderEmail);
             mimeMessage.setRecipients(MimeMessage.RecipientType.TO,email);
             mimeMessage.setSubject("[온도 차이 발생]");
-            String body = "이전 온도 : " + before + "/ 현재 온도 : " + after +"입니다. 설정하신 온도"+temp+"만큼 차이가 발생하여 메일 전송드립니다.";
+            String body = "<html>" +
+                    "<body>" +
+                    "<h2 style='color: #2980b9;'>온도 차이 알림</h2>" +
+                    "<p style='font-size: 16px;'>이전 온도와 현재 온도 간에 차이가 발생했습니다. 확인이 필요합니다.</p>" +
+                    "<table style='width: 100%; border: 1px solid #ddd; border-collapse: collapse;'>" +
+                    "<tr>" +
+                    "<th style='padding: 8px; background-color: #f2f2f2; text-align: left;'>항목</th>" +
+                    "<th style='padding: 8px; background-color: #f2f2f2; text-align: left;'>값</th>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td style='padding: 8px;'>이전 온도</td>" +
+                    "<td style='padding: 8px;'>" + before + "°C</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td style='padding: 8px;'>현재 온도</td>" +
+                    "<td style='padding: 8px;'>" + after + "°C</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<td style='padding: 8px; color: red;'>설정 온도 차이</td>" +
+                    "<td style='padding: 8px; color: red; font-weight: bold;'>" + temp + "°C</td>" +
+                    "</tr>" +
+                    "</table>" +
+                    "<p style='font-size: 16px;'>설정하신 온도 차이만큼 차이가 발생하여 이 메일을 전송드립니다. 주의해 주세요!</p>" +
+                    "<p style='font-size: 14px; color: #777777;'>이 알림은 자동으로 발송된 메시지입니다. 정확한 상태 확인을 위해 시스템에서 제공하는 자료를 확인하세요.</p>" +
+                    "</body>" +
+                    "</html>";
             mimeMessage.setText(body,"UTF-8", "html");
 
         }
