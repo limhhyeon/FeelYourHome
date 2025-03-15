@@ -2,6 +2,7 @@ package com.github.individualproject.service.sensor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.individualproject.repository.sensorData.HumidityStatus;
 import com.github.individualproject.repository.sensorData.SensorData;
 import com.github.individualproject.repository.sensorData.SensorDataRepository;
 import com.github.individualproject.repository.userProduct.UserProduct;
@@ -117,15 +118,31 @@ public class SensorService {
             BigDecimal avgHumid = BigDecimal.valueOf(avgHumidDouble)
                     .setScale(2, RoundingMode.HALF_UP);
 
+
             // UserProduct 조회 및 DB 저장
             UserProduct userProduct = redisUtil.getUserProductByTopic(topic);
-            SensorData sensorData = SensorData.of(userProduct, avgTemp, avgHumid, now);
+            HumidityStatus humidityStatus = determineHumidityStatus(userProduct,avgHumid);
+            SensorData sensorData = SensorData.of(userProduct, avgTemp, avgHumid, now,humidityStatus);
 
             sensorDataList.add(sensorData);
             redisUtil.deleteSensorResponsesByTopic(topic); // 저장 성공 후 삭제
             log.info("토픽 {}: 평균 temp={}, humid={} 저장 완료", topic, avgTemp, avgHumid);
         }
         sensorDataRepository.saveAllBatch(sensorDataList);
+    }
+    private HumidityStatus determineHumidityStatus(UserProduct userProduct,BigDecimal humidity) {
+        double humidValue = humidity.doubleValue();
+        if (humidValue < 20 || humidValue > 80) {
+            //만약 유저가 알림 수신을 허용했다면 메일 보내기
+            if (userProduct.getIsReceiveNotification()){
+                emailService.sendHumidResult(userProduct.getUser().getEmail(),humidity);
+            }
+            return HumidityStatus.DANGER;
+        } else if ((humidValue >= 20 && humidValue < 30) || (humidValue > 60 && humidValue <= 80)) {
+            return HumidityStatus.WARNING;
+        } else {
+            return HumidityStatus.NORMAL;
+        }
     }
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void deleteOldSensorData() {
