@@ -33,6 +33,7 @@ public class JwtUserArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication+"입니다");
 
         if (authentication == null || !(authentication instanceof UsernamePasswordAuthenticationToken)) {
             throw new NotFoundException("인증 정보가 없습니다.");

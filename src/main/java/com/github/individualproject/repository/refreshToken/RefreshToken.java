@@ -2,19 +2,16 @@ package com.github.individualproject.repository.refreshToken;
 
 import com.github.individualproject.repository.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "refresh_tokens")
+@Builder
 public class RefreshToken {
 
     @Id
@@ -44,6 +41,13 @@ public class RefreshToken {
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
+    }
+    public static RefreshToken of(User user,String token){
+        return RefreshToken.builder()
+                .user(user)
+                .token(token)
+                .expiresAt(LocalDateTime.now().plusDays(7))
+                .build();
     }
 
     public void updateToken(String newRefreshToken) {
