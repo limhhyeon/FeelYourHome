@@ -1,4 +1,4 @@
-package com.github.individualproject.web.dto.product;
+package com.github.individualproject.web.dto.product.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,4 +11,5 @@ import lombok.ToString;
 @Builder
 public class BuyProduct {
     private final String productCode;
+    private final String clientId;
 }
