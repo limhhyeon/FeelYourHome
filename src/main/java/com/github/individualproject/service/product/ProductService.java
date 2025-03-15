@@ -9,6 +9,7 @@ import com.github.individualproject.repository.userProduct.UserProduct;
 import com.github.individualproject.repository.userProduct.UserProductRepository;
 import com.github.individualproject.service.exception.BadRequestException;
 import com.github.individualproject.service.exception.NotFoundException;
+import com.github.individualproject.service.redis.RedisUtil;
 import com.github.individualproject.web.dto.ResponseDto;
 import com.github.individualproject.web.dto.product.request.BuyProduct;
 import com.github.individualproject.web.dto.product.request.ChangeNotification;
@@ -39,6 +40,7 @@ public class ProductService {
     @Value("${sub.path}")
     private String PATH;
 
+    private final RedisUtil redisUtil;
     //상품 구매
     public ResponseDto buyProductResult(BuyProduct buyProduct)  {
         if (productRepository.existsByProductCode(buyProduct.getProductCode())){
@@ -95,6 +97,7 @@ public class ProductService {
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
         userProduct.changeTemp(changeTemp.getChangeTemp());
         userProductRepository.save(userProduct);
+        redisUtil.deleteUserProductCache(userProduct.getMqttTopic());
         return new ResponseDto(HttpStatus.OK.value(),"희망 온도 차이 : " +changeTemp.getChangeTemp()+"로 변경되었습니다.");
     }
 
@@ -105,6 +108,7 @@ public class ProductService {
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
         userProduct.changeIsNotification(changeNotification.getIs());
         userProductRepository.save(userProduct);
+        redisUtil.deleteUserProductCache(userProduct.getMqttTopic());
         return new ResponseDto(HttpStatus.OK.value(),"알림 설정이 : " +changeNotification.getIs()+"로 변경되었습니다.");
 
     }

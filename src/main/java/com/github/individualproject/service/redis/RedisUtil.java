@@ -109,7 +109,7 @@ public class RedisUtil {
         Set<String> keys = sensorResponseRedisTemplate.keys(pattern);
         return keys != null ? keys : Collections.emptySet();
     }
-
+    //생성 로직
     public UserProduct getUserProductByTopic(String topic){
         String cacheKey  = CACHE_USERPRODUCT + topic;
         UserProduct userProduct = userProductRedisTemplate.opsForValue().get(cacheKey);
@@ -121,6 +121,16 @@ public class RedisUtil {
             return findUserProduct;
         }
         return userProduct;
+    }
+    //삭제 로직(갱신이 필요해서 만들었음)
+    public void deleteUserProductCache(String topic) {
+        String cacheKey = CACHE_USERPRODUCT + topic;
+        Boolean deleted = userProductRedisTemplate.delete(cacheKey);
+        if (Boolean.TRUE.equals(deleted)) {
+            log.info("캐시 삭제 성공: {}", cacheKey);
+        } else {
+            log.warn("캐시 삭제 실패 또는 키 없음: {}", cacheKey);
+        }
     }
     public UserProduct getUserProductByClientId(String clientId){
         String cacheKey  = CACHE_USERPRODUCT + clientId;
