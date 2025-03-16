@@ -2,9 +2,8 @@ package com.github.individualproject.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.individualproject.repository.sensorData.SensorData;
 import com.github.individualproject.repository.userProduct.UserProduct;
-import com.github.individualproject.web.dto.sensor.SensorResponse;
+import com.github.individualproject.web.dto.sensor.response.SensorResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

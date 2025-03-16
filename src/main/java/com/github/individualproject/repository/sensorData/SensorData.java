@@ -1,7 +1,6 @@
 package com.github.individualproject.repository.sensorData;
 
 import com.github.individualproject.repository.userProduct.UserProduct;
-import com.github.individualproject.web.dto.sensor.SensorResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +33,7 @@ public class SensorData {
     @Column(name = "recorded_at", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime recordedAt;
     @Column(name = "humidity_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private HumidityStatus humidityStatus;
 
 //    public static SensorData of(UserProduct userProduct, SensorResponse sensorResponse){
