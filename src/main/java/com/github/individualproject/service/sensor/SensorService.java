@@ -5,14 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.individualproject.repository.sensorData.HumidityStatus;
 import com.github.individualproject.repository.sensorData.SensorData;
 import com.github.individualproject.repository.sensorData.SensorDataRepository;
+import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.userProduct.UserProduct;
 import com.github.individualproject.repository.userProduct.UserProductRepository;
 import com.github.individualproject.service.auth.EmailService;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.service.redis.RedisUtil;
-import com.github.individualproject.web.dto.sensor.SensorResponse;
+import com.github.individualproject.web.dto.ResponseDto;
+import com.github.individualproject.web.dto.sensor.response.SensorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -151,4 +154,18 @@ public class SensorService {
         log.info("7일이 지난 SensorData 레코드 삭제 완료");
     }
 
+    public ResponseDto latestSensorResult(User user,Long userProductId) {
+        UserProduct userProduct = userProductRepository.findById(userProductId)
+                .orElseThrow(()-> new NotFoundException("유저의 상품이 아닙니다."));
+        //redis에서 저장된 현재 온도와 습도 가져오기
+        SensorResponse previousResponse = redisUtil.getPreviousSensorResponse(userProduct.getMqttTopic());
+        //만약 redis에 없다면 db에 가장 최근 온도 습도 가져오기
+        if (previousResponse == null){
+            SensorData sensorData =sensorDataRepository.findTopByUserProductOrderByRecordedAtDesc(userProduct)
+                    .orElseThrow(()-> new NotFoundException("현재 측정된 온도가 존재하지 않습니다."));
+            previousResponse=SensorResponse.from(sensorData);
+        }
+        return new ResponseDto(HttpStatus.OK.value(),"가장 최근 온도 습도 조회 성공", previousResponse);
+
+    }
 }

@@ -1,7 +1,6 @@
 package com.github.individualproject.repository.sensorData;
 
 import com.github.individualproject.repository.userProduct.UserProduct;
-import com.github.individualproject.web.dto.sensor.SensorResponse;
 import jakarta.persistence.*;
 import lombok.*;
 

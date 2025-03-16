@@ -1,10 +1,9 @@
 package com.github.individualproject.service.redis;
 
-import com.github.individualproject.repository.sensorData.SensorData;
 import com.github.individualproject.repository.userProduct.UserProduct;
 import com.github.individualproject.repository.userProduct.UserProductRepository;
 import com.github.individualproject.service.exception.NotFoundException;
-import com.github.individualproject.web.dto.sensor.SensorResponse;
+import com.github.individualproject.web.dto.sensor.response.SensorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
