@@ -83,14 +83,12 @@ public class JwtTokenProvider {
 //        return null;
 //    }
     public String resolveToken(HttpServletRequest request) {
-        log.info("실행한다.00");
         Cookie[] cookies = request.getCookies();
-        log.info(cookies+"쿠키 값입니다.");
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("Authorization".equals(cookie.getName())) {
-                    log.info("쿠키 이름이야:"+ cookie.getName());
-                    log.info("쿠키 값이야:"+ cookie.getValue());
+
                     return cookie.getValue();  // 쿠키에서 토큰 값 추출
                 }
             }

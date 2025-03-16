@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,8 @@ public interface SensorDataRepository extends JpaRepository<SensorData,Long>,Cus
 //    @Transactional
 //    @Query("DELETE FROM SensorData s WHERE s.recordedAt < :cutoffDate")
 //    void deleteOldSensorData(@Param("cutoffDate") LocalDateTime cutoffDate);
-Optional<SensorData> findTopByUserProductOrderByRecordedAtDesc(UserProduct userProduct);
+    Optional<SensorData> findTopByUserProductOrderByRecordedAtDesc(UserProduct userProduct);
+    List<SensorData> findAllByRecordedAtOrderByRecordedAtDesc(LocalDateTime localDateTime);
+    List<SensorData> findAllByUserProduct(UserProduct userProduct);
 
 }

@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerMappingIntrospector introspector;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("실행한다.");
         RequestMatcher permitAllMatcher = new AndRequestMatcher(
                 new OrRequestMatcher( // 먼저 허용할 URL들 정의
                         new MvcRequestMatcher(introspector, "/auth/**")
@@ -45,9 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("실행한다2.");
+
         String token = jwtTokenProvider.resolveToken(request);
-        log.info("실행한다.3" + token);
+
         try {
             if (token != null && jwtTokenProvider.validToken(token)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);

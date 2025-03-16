@@ -33,6 +33,7 @@ public class SensorData {
     @Column(name = "recorded_at", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime recordedAt;
     @Column(name = "humidity_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private HumidityStatus humidityStatus;
 
 //    public static SensorData of(UserProduct userProduct, SensorResponse sensorResponse){

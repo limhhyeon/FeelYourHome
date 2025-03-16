@@ -12,6 +12,8 @@ import com.github.individualproject.service.auth.EmailService;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.service.redis.RedisUtil;
 import com.github.individualproject.web.dto.ResponseDto;
+import com.github.individualproject.web.dto.sensor.response.CurrentSensorData;
+import com.github.individualproject.web.dto.sensor.response.SensorDataByDateDto;
 import com.github.individualproject.web.dto.sensor.response.SensorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +25,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -166,6 +170,35 @@ public class SensorService {
             previousResponse=SensorResponse.from(sensorData);
         }
         return new ResponseDto(HttpStatus.OK.value(),"가장 최근 온도 습도 조회 성공", previousResponse);
+
+    }
+
+    public ResponseDto todayMySensorListResult(User user, Long userProductId) {
+        UserProduct userProduct = userProductRepository.findById(userProductId)
+                .orElseThrow(()-> new NotFoundException("유저의 상품이 아닙니다."));
+        List<SensorData> todaySensorData = sensorDataRepository.findAllByRecordedAtDateAndUserProduct(LocalDate.now(),userProduct);
+        List<CurrentSensorData> todaySensorResponses = todaySensorData.stream().map(CurrentSensorData::from).toList();
+        return new ResponseDto(HttpStatus.OK.value(),"오늘 2시간마다의 평균 온도 습도 조회 성공",todaySensorResponses);
+    }
+
+    public ResponseDto weekMySensorListResult(User user, Long userProductId) {
+        UserProduct userProduct = userProductRepository.findById(userProductId)
+                .orElseThrow(()-> new NotFoundException("유저의 상품이 아닙니다."));
+        // 일주일치 데이터 전체 조회
+        List<SensorData> weekSensorData = sensorDataRepository.findAllByUserProduct(userProduct);
+
+        // 날짜별로 그룹화하고 DTO로 변환
+        List<SensorDataByDateDto> weekSensorResponses = weekSensorData.stream()
+                .collect(Collectors.groupingBy(
+                        sensorData -> sensorData.getRecordedAt().toLocalDate(), // LocalDateTime -> LocalDate
+                        Collectors.mapping(CurrentSensorData::from, Collectors.toList())
+                ))
+                .entrySet().stream()
+                .map(entry -> new SensorDataByDateDto(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return new ResponseDto(HttpStatus.OK.value(), "일주일치 날짜별 평균 온도 습도 조회 성공", weekSensorResponses);
+
 
     }
 }

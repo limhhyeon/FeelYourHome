@@ -19,4 +19,12 @@ public class SensorController {
     public ResponseDto latestSensor(@CurrentUser User user,@PathVariable("userProductId")Long userProductId){
         return sensorService.latestSensorResult(user,userProductId);
     }
+    @GetMapping("/{userProductId}/today")
+    public ResponseDto todayMySensorList(@CurrentUser User user,@PathVariable("userProductId")Long userProductId){
+        return sensorService.todayMySensorListResult(user,userProductId);
+    }
+    @GetMapping("/{userProductId}/week")
+    public ResponseDto weekMySensorList(@CurrentUser User user,@PathVariable("userProductId")Long userProductId){
+        return sensorService.weekMySensorListResult(user,userProductId);
+    }
 }
