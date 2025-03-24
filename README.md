@@ -41,20 +41,20 @@
 ### [사용 기술]
 #### **🛠️ Backend**  
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white) ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)  
-- **Spring MVC + REST API** : RESTful API 개발  
+- **QueryDsl** : 오타 발생 방지를 위한 queryDls 사용  
 - **Spring Security** : 인증 및 권한 관리  
-- **SLF4J** : 애플리케이션 로깅  
-- **Spring Cache** : DB 리소스를 줄이기 위한 캐시 관리  
-- **Spring Schedule** : 스케줄 관리
-- **WebSocket + STOMP** : 실시간 알림 및 채팅 
+- **SLF4J** : 애플리케이션 로깅을 위해 사용   
+- **Spring Schedule** : 일정 시간마다 db 저장을 위한 스케줄 사용
+- **MQTT** : IoT 기기와의 메시지 중계 및 실시간 데이터 처리에 사용
 
 #### **💻 Database & Cache**    
  ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)  
-- **비관적 락(Pessimistic Lock)** : 동시성 제어
+
 
 #### **☁️ DevOps & Deployment**    
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Mosquitto](https://img.shields.io/badge/mosquitto-%233C5280.svg?style=for-the-badge&logo=eclipsemosquitto&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)  
@@ -62,21 +62,16 @@
 - **AWS RDS(MariaDB)** : 클라우드 DB 관리
 - **AWS S3** : 파일, 이미지 관리  
 
-#### **📝 Collaboration Tools**  
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)  ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white) ![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white) 
 
-### [커밋 컨벤션]
+### [커밋 처리]
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 ```java
 feat: 새로운 기능을 추가했을 때
 fix: 버그를 수정했을 때
-docs: 문서 수정
 refactor: 코드 개선했을 때
 perf: 성능 최적화할 때
-test: 테스트 코드 추가, 수정
 build: 빌드 시스템이나 외부 의존성 변경할 때
-ci: CI 설정 수정
 ```
 <br/>
 
@@ -84,7 +79,7 @@ ci: CI 설정 수정
 ### [System Architecture]
  
 
-####broker 처리
+#### broker 처리
 
 
 ### [ERD]
@@ -96,27 +91,23 @@ ci: CI 설정 수정
 ## 4. 기능 전략
 
 #### 1. Auth
-사용자 인증 및 관리를 위해 다양한 기능을 구현했습니다. 이메일 중복 확인을 통해 회원 가입 시 이미 등록된 이메일이 없는지 확인하고, 회원가입 시에는 이메일과 비밀번호 등 필수 정보를 입력받아 신규 사용자를 등록합니다. 사용자 인증을 강화하기 위해 이메일 인증 절차를 도입하여, 인증번호를 이메일로 발송하고 사용자가 이를 입력하면 이메일을 사용할 수 있도록 설정했습니다.
+이메일 중복 확인을 통해 회원 가입 시 이미 등록된 이메일이 없는지 확인하고, 회원가입 시에는 이메일과 비밀번호 등 필수 정보를 입력받아 신규 사용자를 등록합니다. 사용자 인증을 강화하기 위해 이메일 인증 절차를 도입하여, 인증번호를 이메일로 발송하고 사용자가 이를 입력하면 이메일을 사용할 수 있도록 설정했습니다.
 
 로그인 후 보안을 강화하기 위해 JWT 토큰 관리를 적용하여, 로그인 시 HttpOnly 및 secure 속성을 가진 쿠키에 JWT 토큰을 저장하고, 이를 보안 필터로 관리합니다. 리프레시 토큰 관리는 DB에서 처리되며, 액세스 토큰이 만료될 경우 이를 갱신할 수 있도록 리프레시 토큰을 사용합니다. 또한, 간편한 로그인 방법을 제공하기 위해 소셜 로그인 기능을 추가하여, 사용자가 카카오 계정을 이용해 손쉽게 로그인할 수 있도록 구현했습니다.
 
 #### 2. Product
 1) 클라이언트 사이드 (제품에 대한 설계)
-제품은 클라이언트 ID와 비밀번호를 내장하고 있어, Mosquitto 서버와의 연결 시 인증을 통해 안전하게 데이터를 전송합니다. 온도 및 습도 정보는 1분마다 Mosquitto 서버로 전송되며, 서버에서는 이를 처리하고 저장합니다. 또한, Wi-Fi 연결을 위해 IoT 제품은 Wi-Fi 기능을 갖추고 있으며, WiFiManager를 사용하여 사용자가 주변 Wi-Fi 네트워크를 등록할 수 있도록 설계되었습니다. 제품이 구매된 후에만 Mosquitto 서버에 퍼블리싱이 가능하며, 이를 위해 클라이언트 ID와 비밀번호를 사용해 인증된 사용자만 접근할 수 있도록 보안을 강화했습니다.
+제품은 클라이언트 ID와 비밀번호를 내장하고 있어, Mosquitto 서버와의 연결 시 인증을 통해 안전하게 데이터를 전송합니다. 온도 및 습도 정보는 1분마다 Mosquitto 서버로 전송된다. 또한, Wi-Fi 연결을 위해 IoT 제품은 Wi-Fi 기능을 갖추고 있으며, WiFiManager를 사용하여 사용자가 주변 Wi-Fi 네트워크를 등록할 수 있도록 설계되었습니다.
 
 2) 서버 사이드 (서버에서 상품에 대한 설계)
-서버에서는 판매된 상품만 외부 API를 통해 구매된 후 DB에 등록되도록 설계되었습니다. IoT 제품은 판매 전에는 DB에 등록되지 않으며, 상품 번호 등록을 통해 사용자가 웹사이트에서 구매한 상품을 등록합니다. 또한, 알림 설정 기능을 제공하여 사용자가 설정한 기준에 따라 알림을 받을지 여부를 선택할 수 있습니다. 사용자는 이전 온도와 현재 온도의 차이가 특정 기준을 초과할 때 알림을 받을 수 있도록 설정하는 API를 제공하며, 알림을 받을지 여부도 설정할 수 있는 기능을 API를 통해 제공합니다.
+서버에서는 판매된 상품만 API를 통해 구매된 후 DB에 등록되도록 설계되었습니다. IoT 제품은 판매 전에는 DB에 등록되지 않으며, 상품 번호 등록을 통해 사용자가 웹사이트에서 구매한 상품을 등록합니다. 또한, 알림 설정 기능을 제공하여 사용자가 설정한 기준에 따라 알림을 받을지 여부를 선택할 수 있습니다.
 
 #### 3. Sensor
-온도와 습도 데이터는 실시간으로 Redis에 저장하여 DB의 부하를 줄이고, Redis에서 빠르게 데이터를 가져와 API를 통해 사용자에게 제공합니다. 또한, DB에는 평균 온도/습도 데이터를 2시간 간격으로 저장하며, 만약 평균 습도가 경고 수준을 넘으면 사용자가 설정한 알림 기준에 따라 메일 알림을 발송하도록 설계했습니다.
+온도와 습도 데이터는 실시간으로 Redis에 저장하여 DB 부하를 줄이고, 빠르게 데이터를 가져와 API를 통해 사용자에게 제공합니다. 또한, 스케줄러를 활용해 평균 온도/습도 데이터를 2시간 간격으로 DB에 저장하며, 사용자가 설정한 기준을 초과하는 변화가 발생할 경우 자동으로 메일을 전송하는 기능을 구현했습니다.
 
-실시간으로 수신된 온도와 습도는 Redis에서 이전 데이터를 가져와 비교하고, 이 값들이 사용자가 설정한 온도 차이 기준을 초과하면 실시간으로 메일 알림을 전송할 수 있도록 구현하였습니다. 이를 통해 사용자에게 중요한 변화가 있을 때 즉시 알림을 제공할 수 있습니다.
-<br/>
+사용자는 알림 기준을 직접 설정할 수 있으며, 설정한 조건에 따라 습도가 경고 수준을 넘거나 온도 차이가 발생하면 실시간으로 메일이 발송됩니다. 이 과정은 백그라운드에서 처리되어 사용자에게 빠른 알림을 제공합니다.
 
-#### 4. Mail
-메일 전송 시스템은 실시간 온도 차이가 사용자가 설정한 기준을 초과하거나, 평균 습도가 경고 수준을 초과할 때 자동으로 메일을 전송하는 기능을 구현했습니다. 사용자는 자신의 알림 기준을 설정할 수 있으며, 이 기준에 맞는 상황이 발생할 경우 백그라운드 작업으로 메일 전송이 처리됩니다. 이를 통해 사용자에게 실시간 알림을 빠르게 전달할 수 있습니다.
-
-#### 5. Mosquitto 서버
+#### 5. Mosquitto && 애플리케이션 서버
 Mosquitto 서버는 보안을 강화하기 위해 비밀번호를 설정하여 외부에서 무단으로 접근할 수 없도록 했습니다. 또한, DHT22 제품에는 고유의 클라이언트 ID와 비밀번호를 내장하여, 인증된 클라이언트만 서버에서 구독할 수 있도록 설계하였습니다. 구독 관리 측면에서는 제품이 꺼지면 해당 제품에 대한 구독을 취소하고, 서버가 종료되었을 때는 활성화된 제품만 구독하여 리소스 낭비를 줄였습니다. 제품의 상태 변경은 Redis에 기록되며, 주기적으로 DB에 상태를 저장하여 효율적인 데이터 관리를 구현하였습니다.
 
 
@@ -247,13 +238,10 @@ Mosquitto 서버는 보안을 강화하기 위해 비밀번호를 설정하여 �
 - **Spring의 @PreDestroy 애너테이션**을 통해 서버 종료 시 리소스 정리 및 데이터 저장 작업을 자동으로 처리하는 방법을 배웠다. 이를 통해 서버가 종료되기 전에 필요한 작업을 간결하고 일관되게 처리할 수 있었다.
 
 
-
-
-
 <br/>
 
 
 ## 7. 느낀점
-- 우선 처음 써보는 MQTT에 신기해서 재밌게 했다. 왜 그랬냐면 하면서 이슈도 많아지도 그 이슈에 대해서 찾아보니 새로운 것도 알게되고 신기한 것도 많이 알게되어 좋았다 무엇보다도 내가 쓰려고 만든 거라 그런지 더 보안에 신경 쓰고 이런 건 이렇게 하면 어떻게 될까하면서 더 보안할 점을 찾게 된 거 같다!
-- 우선은 mosquitto서버에 유저 아이디랑 비밀번호를 계속 추가해줘야되는 불편한 점이 있는데 Iot 제품을 통한 것을 mosquitto 서버에 접근하려고 할 때 어떻게 하는지 더 알아보고 싶어졌다. 
+- 우선 내가 사용하려고 만든 프로젝트를 설계하면서 많은 기능이 아닌 간단한 기능을 구현하는 대신 그 안에서  고려할 점을 찾아서 성능에 대해 고려해보자라고 하면서 시작을 했다. 하지만 생각했던 것보다 고려할게 너무 많아 머리가 아팠던 거 같다.. 왜냐하면 새로운 것도 많고 그거에 대해 공부까지 하고 적용해보려 하니 힘이 많이 들었던 것 같다. 하지만 내가 편리하게 쓰려면 만들어야지 이 생각으로 더 열심히 만들었고 성공하니 너무 뿌듯했다.
+- 우선은 mosquitto서버 파일에 유저 아이디랑 비밀번호를 계속 추가해줘야되는 불편한 점이 있는데 Iot 제품이 mosquitto 서버에 접근하려고 할 때 어떤식으로 하는지 더 알아보고 싶어졌다. 
 
