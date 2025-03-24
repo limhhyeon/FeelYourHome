@@ -69,15 +69,16 @@ build: 빌드 시스템이나 외부 의존성 변경할 때
 
 ## 3. System Architecture & ERD
 ### [Deployment Plan]
-<img src="https://github.com/user-attachments/assets/b69d3a5b-179c-4b23-859f-a4eeb18978a2" alt="Iot디플로이 전략" width="500"/>
+<img src="https://github.com/user-attachments/assets/b69d3a5b-179c-4b23-859f-a4eeb18978a2" alt="Iot디플로이 전략" width="700"/>
 
 #### broker 처리  
-<img src="https://github.com/user-attachments/assets/340661cc-c545-4789-ba4d-b800c4ff6dff" alt="아이오티 전송 개념2" width="500"/>
-1. 기기에서 MQTT 메시지를 발행 (publish)
-2. Mosquitto MQTT 브로커에서 해당 메시지를 수신
-3. 애플리케이션에서 MQTT 클라이언트 등록 (clientId 설정)
-4. 애플리케이션에서 MQTT 채널 등록 후 구독 (subscribe)
-5. 애플리케이션에서 메시지 수신 후 처리 (예: 알림, DB 저장 등)
+<img src="https://github.com/user-attachments/assets/340661cc-c545-4789-ba4d-b800c4ff6dff" alt="아이오티 전송 개념2" width="700"/>  
+
+1. 기기에서 MQTT 메시지를 발행 (publish)  
+2. Mosquitto MQTT 브로커에서 해당 메시지를 수신  
+3. 애플리케이션에서 MQTT 클라이언트 등록 (clientId 설정)  
+4. 애플리케이션에서 MQTT 채널 등록 후 구독 (subscribe)  
+5. 애플리케이션에서 메시지 수신 후 처리 (예: 알림, DB 저장 등)  
 
 
 ### [ERD]
