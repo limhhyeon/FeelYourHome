@@ -29,10 +29,10 @@
 
 ## 1. 팀원 소개
 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;임홍현😺&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;임홍현&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | :---------------------: |
-| &nbsp;&nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
-| &nbsp;&nbsp;&nbsp;&nbsp;🖥️ Backend |
+| &nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
+| &nbsp;&nbsp;🖥️ Backend |
 
 
 <br/>
