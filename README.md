@@ -31,8 +31,8 @@
 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;임홍현😺&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | :---------------------: |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🖥️ Backend |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🖥️ Backend |
 
 
 <br/>
@@ -60,7 +60,7 @@
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)  
 - **AWS EC2** : 클라우드 서버  
 - **AWS RDS(MariaDB)** : 클라우드 DB 관리
-- **AWS S3** : 파일, 이미지 관리  
+
 
 
 ### [커밋 처리]
