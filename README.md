@@ -4,7 +4,8 @@
 
 ## 소개 및 개요
 - 프로젝트 기간 : 2025.03.14 ~ 2025.03.21
-- 인원 : 백엔드 1명
+- 인원 : 임홍현 <backend>
+- github : [@limhhyeon](https://github.com/limhhyeon)
 
 
 ### [프로젝트 개요]:
@@ -26,13 +27,6 @@
     - 대부분의 사용자들에게 물어봤을 떄 이 기능에 대해 필요성을 보였음. 온도 차이가 **위험 수준**에 도달했을 때 이를 실시간 알림으로 받을 수 있는 기능은 **안전성**을 높이고, **위험 상황을 사전에 감지**할 수 있어 매우 유용하다는 반응을 보였음.
     - 사용자들은 **위험 상황**을 미리 감지하고, 이를 실시간 알림으로 받아 **즉시 대응**할 수 있는 기능에 대해 **긍정적**인 반응을 보였음.
 
-
-## 1. 팀원 소개
-
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;임홍현&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| :---------------------: |
-| &nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
-| &nbsp;&nbsp;🖥️ Backend |
 
 
 <br/>
