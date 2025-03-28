@@ -1,5 +1,7 @@
 package com.github.individualproject.web.controller;
 
+import com.github.individualproject.repository.user.CurrentUser;
+import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.service.auth.AuthService;
 import com.github.individualproject.web.dto.ResponseDto;
@@ -28,32 +30,42 @@ public class AuthController {
         return authService.duplicateCheckResult(duplicateCheck);
     }
 
-//    @PostMapping("/login")
-//    public ResponseDto login(@RequestBody Login login, HttpServletResponse response){
-//        String token = authService.loginResult(login);
-//        response.setHeader("Authorization", "Bearer " + token);
-//        return new ResponseDto(HttpStatus.OK.value(), "로그인 성공");
-//    }
 
     @PostMapping("/login")
-    public ResponseDto login(@RequestBody Login login, HttpServletResponse response) {
-        TokenDto tokenDto = authService.loginResult(login);
-        response.setHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-        // 리프레시 토큰도 응답 본문에 포함
-        return new ResponseDto(HttpStatus.OK.value(), "로그인 성공", tokenDto);
+    public ResponseDto login(@RequestBody Login loginRequest, HttpServletResponse response){
+        log.info("동작 성공");
+        String  token = authService.loginResult(loginRequest);
+        if (token != null && !token.isEmpty()) {
+            authService.createCookie(token,response);
+            log.info("동작 성공");
+            return new ResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
+
+        } else {
+            return new ResponseDto(HttpStatus.UNAUTHORIZED.value(), "아이디 또는 비밀번호를 다시 확인해주세요");
+        }
+    }
+    @PostMapping("/logout")
+    public ResponseDto logout(@CurrentUser User user, HttpServletResponse response){
+        authService.logoutResult(user,response);
+
+        return new ResponseDto(HttpStatus.OK.value(), "로그아웃 성공");
     }
 
 
-    @PostMapping("/refresh")
-    public ResponseDto refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest,HttpServletResponse response) {
-        TokenDto tokenDto = authService.refreshToken(refreshTokenRequest.getRefreshToken());
-        response.setHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-        return new ResponseDto(HttpStatus.OK.value(), "토큰 갱신 성공", tokenDto);
+    @PostMapping("/token/refresh")
+    public ResponseDto refreshToken(@CookieValue(value = "Authorization") String accessToken,HttpServletResponse response){
+        return authService.refreshToken(accessToken,response);
     }
 
     @GetMapping("/test")
-    public String test(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        return customUserDetails.getEmail();
+    public String test(@CurrentUser User user){
+        if (user == null) {
+            System.out.println("User is null");
+            return "User not authenticated";
+        }
+        System.out.println("user : " + user.getEmail());
+        return user.getEmail();
     }
+
 
 }

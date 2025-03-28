@@ -1,5 +1,6 @@
 package com.github.individualproject.repository.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.individualproject.repository.base.BaseEntity;
 import com.github.individualproject.repository.userRole.UserRole;
 import com.github.individualproject.web.dto.auth.SignUp;
@@ -35,7 +36,8 @@ public class User extends BaseEntity {
     private String phoneNumber;
     @Column(name = "signup_type", length = 20,nullable = false)
     private String signupType;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
     private List<UserRole> userRoles;
 
 

@@ -1,16 +1,20 @@
-package com.github.individualproject.config;
+package com.github.individualproject.config.auth;
 
 import com.github.individualproject.repository.refreshToken.RefreshToken;
 import com.github.individualproject.repository.refreshToken.RefreshTokenRepository;
 import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.user.UserRepository;
 import com.github.individualproject.service.exception.NotFoundException;
+import com.github.individualproject.service.exception.TokenValidateException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +30,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.secret-key-source}")
@@ -70,10 +75,23 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
+//    public String resolveToken(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+//        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//        return null;
+//    }
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+
+                    return cookie.getValue();  // 쿠키에서 토큰 값 추출
+                }
+            }
         }
         return null;
     }
@@ -96,8 +114,10 @@ public class JwtTokenProvider {
                     .getBody();
             Date now = new Date();
             return claims.getExpiration().after(now);
-        }catch (Exception e){
-            return false;
+        }catch (TokenValidateException tve){
+            throw new TokenValidateException("토큰이 유효하지 않습니다.");
+        }catch (ExpiredJwtException eje){
+            throw new TokenValidateException("토큰이 유효하지 않습니다.");
         }
 
     }

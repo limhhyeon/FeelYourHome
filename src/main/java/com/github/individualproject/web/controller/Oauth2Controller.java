@@ -3,7 +3,7 @@ package com.github.individualproject.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.individualproject.config.JwtTokenProvider;
+import com.github.individualproject.config.auth.JwtTokenProvider;
 import com.github.individualproject.repository.role.Role;
 import com.github.individualproject.repository.user.User;
 import com.github.individualproject.repository.user.UserRepository;
@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +46,12 @@ public class Oauth2Controller {
     private final UserRepository userRepository;
 
 
+    //카카오 리다이렉트
+    @GetMapping("/oauth2/login/kakao")
+    public void kakaoLoginRedirect(HttpServletResponse response)  {
+        oauth2Service.redirect(response);
+
+    }
     @GetMapping("/oauth2/callback/kakao")
     public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {
         log.info("코드: " +code);
