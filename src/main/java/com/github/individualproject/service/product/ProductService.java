@@ -85,7 +85,7 @@ public class ProductService {
 
 
     }
-
+    //설정 온도 바꾸기
     public ResponseDto changeTempResult(User user, ChangeTemp changeTemp) {
         UserProduct userProduct = userProductRepository.findById(changeTemp.getUserProductId())
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));
@@ -94,7 +94,7 @@ public class ProductService {
         redisUtil.deleteUserProductCache(userProduct.getMqttTopic());
         return new ResponseDto(HttpStatus.OK.value(),"희망 온도 차이 : " +changeTemp.getChangeTemp()+"로 변경되었습니다.");
     }
-
+    //알림 설정하기
     public ResponseDto notificationChangeResult(User user, ChangeNotification changeNotification) {
         UserProduct userProduct = userProductRepository.findById(changeNotification.getUserProductId())
                 .orElseThrow(()-> new NotFoundException("유저 상품을 찾을 수 없습니다."));

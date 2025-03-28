@@ -1,27 +1,23 @@
 package com.github.individualproject.web.dto.sensor.response;
 
+import com.github.individualproject.repository.sensorData.HumidityStatus;
 import com.github.individualproject.repository.sensorData.SensorData;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
 @ToString
 @Builder
 @NoArgsConstructor
-public class CurrentSensorData {
+public class TodaySensorData {
     private double temp;
     private double humid;
-    private LocalDateTime localDateTime = LocalDateTime.now();
-    private String humidStatus;
-
-    public static CurrentSensorData from(SensorData sensorData){
-        return CurrentSensorData.builder()
+    private HumidityStatus humidityStatus;
+    public static TodaySensorData of(SensorData sensorData, HumidityStatus humidityStatus){
+        return TodaySensorData.builder()
                 .humid(sensorData.getHumidity().floatValue())
                 .temp(sensorData.getTemperature().floatValue())
-                .localDateTime(sensorData.getRecordedAt())
-                .humidStatus(sensorData.getHumidityStatus().toString())
+                .humidityStatus(humidityStatus)
                 .build();
     }
 }

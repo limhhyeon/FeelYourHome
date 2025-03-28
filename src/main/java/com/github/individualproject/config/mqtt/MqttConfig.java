@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
@@ -24,13 +25,18 @@ import org.springframework.messaging.MessageChannel;
 @Slf4j
 public class MqttConfig {
     private final UserProductRepository userProductRepository;
-    private MqttPahoMessageDrivenChannelAdapter adapter;
+    @Value("${mqtt.broker}")
+    private String brokerHost;
+    @Value("${mqtt.channel}")
+    private String channel;
+    @Value("${mqtt.server-clientid}")
+    private String serverClientId;
+
     @Bean
     public MqttClient mqttStatusClient() throws MqttException {
-        String broker = "tcp://43.202.80.85:1883";
+        String broker = brokerHost;
         String clientId = "ServerStatusClient_" + System.currentTimeMillis(); // 고유 ID
         MqttClient client = new MqttClient(broker, clientId);
-
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         client.connect(options);
@@ -43,7 +49,7 @@ public class MqttConfig {
     public DefaultMqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://43.202.80.85"});
+        options.setServerURIs(new String[]{brokerHost});
         options.setAutomaticReconnect(true);
         options.setConnectionTimeout(10); // 연결 타임아웃 설정
         options.setKeepAliveInterval(60); // Keep-alive 간격 설정
@@ -65,16 +71,32 @@ public class MqttConfig {
 //        adapter.setQos(1);
 //        return adapter;
 //    }
-    @Bean
-    public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
+@Bean
+public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
+    MqttPahoMessageDrivenChannelAdapter adapter = createAndStartAdapter();
+    if (!waitForAdapterStart(adapter)) {
+        log.error("MQTT 어댑터가 시작되지 않음. 구독 초기화 실패.");
+        return adapter;
+    }
+
+    restoreSubscriptions(adapter);
+    return adapter;
+}
+
+    private MqttPahoMessageDrivenChannelAdapter createAndStartAdapter() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
-        this.adapter = adapter;
-        adapter.setOutputChannelName("mqttInputChannel");
+                new MqttPahoMessageDrivenChannelAdapter(serverClientId, mqttClientFactory());
+
+        adapter.setOutputChannelName(channel);
         adapter.setCompletionTimeout(5000);
         adapter.setQos(1);
         adapter.start(); // 명시적 시작
         log.info("MqttPahoMessageDrivenChannelAdapter 빈 생성 및 시작 완료");
+
+        return adapter;
+    }
+
+    private boolean waitForAdapterStart(MqttPahoMessageDrivenChannelAdapter adapter) {
         int retries = 5;
         while (!adapter.isRunning() && retries > 0) {
             try {
@@ -84,11 +106,10 @@ public class MqttConfig {
             }
             retries--;
         }
-        if (!adapter.isRunning()) {
-            log.error("MQTT 어댑터가 시작되지 않음. 구독 초기화 실패.");
-            return adapter;
-        }
+        return adapter.isRunning();
+    }
 
+    private void restoreSubscriptions(MqttPahoMessageDrivenChannelAdapter adapter) {
         int page = 0;
         int size = 1000;
         Page<String> topics;
@@ -103,8 +124,6 @@ public class MqttConfig {
             page++;
         } while (topics.hasNext());
         log.info("모든 구독 복원 완료");
-
-        return adapter;
     }
 
 

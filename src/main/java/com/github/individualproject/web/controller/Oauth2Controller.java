@@ -11,6 +11,7 @@ import com.github.individualproject.repository.userDetails.CustomUserDetails;
 import com.github.individualproject.repository.userDetails.OAuth2UserInfo;
 import com.github.individualproject.repository.userRole.UserRole;
 //import com.github.individualproject.service.auth.Oauth2Service;
+import com.github.individualproject.service.auth.AuthService;
 import com.github.individualproject.service.auth.Oauth2Service;
 import com.github.individualproject.service.exception.NotFoundException;
 import com.github.individualproject.web.dto.ResponseDto;
@@ -37,13 +38,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestController
+@RestController("/api")
 @RequiredArgsConstructor
 @Slf4j
 public class Oauth2Controller {
     private final Oauth2Service oauth2Service;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
 
     //카카오 리다이렉트
@@ -56,11 +56,22 @@ public class Oauth2Controller {
     public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {
         log.info("코드: " +code);
         String accessToken = oauth2Service.getJwtToken(code);
+        authService.createCookie(accessToken,response);
         // 여기서 accessToken을 사용하여 추가 작업을 수행할 수 있습니다.
         log.info("토큰입니다: " + accessToken);
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        return new ResponseDto(HttpStatus.OK.value(), "로그인 성공 : " + "Bearer " + accessToken);
+        return new ResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
+
     }
+//    @GetMapping("/oauth2/callback/kakao")
+//    public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {
+//        log.info("코드: " +code);
+//        String accessToken = oauth2Service.getJwtToken(code);
+//
+//        // 여기서 accessToken을 사용하여 추가 작업을 수행할 수 있습니다.
+//        log.info("토큰입니다: " + accessToken);
+//        response.setHeader("Authorization", "Bearer " + accessToken);
+//        return new ResponseDto(HttpStatus.OK.value(), "로그인 성공 : " + "Bearer " + accessToken);
+//    }
 //@GetMapping("/oauth2/callback/kakao")
 //public ResponseDto kakaoCallback(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 //    ;

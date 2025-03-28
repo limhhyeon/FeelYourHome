@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("api/email")
 @Slf4j
 @RequiredArgsConstructor
 public class EmailController {
     private final EmailService emailService;
 
-    @PostMapping("/send")
+    @PostMapping("")
     public ResponseDto sendEmail(@RequestBody EmailCheck email){
         return emailService.sendEmailResult(email.getEmail());
     }

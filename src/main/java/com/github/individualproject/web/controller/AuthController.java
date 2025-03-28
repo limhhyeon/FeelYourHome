@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
@@ -39,7 +39,6 @@ public class AuthController {
             authService.createCookie(token,response);
             log.info("동작 성공");
             return new ResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
-
         } else {
             return new ResponseDto(HttpStatus.UNAUTHORIZED.value(), "아이디 또는 비밀번호를 다시 확인해주세요");
         }

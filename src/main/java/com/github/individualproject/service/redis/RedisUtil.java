@@ -75,6 +75,7 @@ public class RedisUtil {
         Set<String> keys = sensorResponseRedisTemplate.keys(pattern);
         sensorResponseRedisTemplate.delete(keys);
     }
+    //모든 센서 data 조회
     public List<SensorResponse> getAllSensor(){
         String pattern = CACHE_PREFIX+"*";
         Set<String> sensorKeys = sensorResponseRedisTemplate.keys(pattern);
@@ -130,6 +131,7 @@ public class RedisUtil {
             log.warn("캐시 삭제 실패 또는 키 없음: {}", cacheKey);
         }
     }
+    //clientId로 유저로 조회 해당 조회는 많이 필요해서 db에서 매번 가져오는 것보다 redis에 저장해두었다가 만료가 되면 db에서 가져오는 메소드
     public UserProduct getUserProductByClientId(String clientId){
         String cacheKey  = CACHE_USERPRODUCT + clientId;
         UserProduct userProduct = userProductRedisTemplate.opsForValue().get(cacheKey);
@@ -138,10 +140,10 @@ public class RedisUtil {
                     .orElseThrow(()-> new NotFoundException("토픽에 해당하는 상품을 찾을 수 없거나 유저가 일치하지 않습니다."));
             Duration expireDuration= Duration.ofSeconds(CACHE_TTL_SECONDS);
             userProductRedisTemplate.opsForValue().set(cacheKey,findUserProduct,expireDuration);
-            log.info("여기서 불러오니?2");
+
             return findUserProduct;
         }
-        log.info("여기서 불러오니?");
+
         return userProduct;
     }
 

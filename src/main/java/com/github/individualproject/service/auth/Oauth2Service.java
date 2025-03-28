@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.individualproject.config.auth.JwtTokenProvider;
+import com.github.individualproject.repository.refreshToken.RefreshTokenRepository;
 import com.github.individualproject.repository.role.Role;
 import com.github.individualproject.repository.role.RoleRepository;
 import com.github.individualproject.repository.user.User;
@@ -49,6 +50,8 @@ public class Oauth2Service {
     private String clientSecret;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final AuthService authService;
 
 
     @Transactional
@@ -66,6 +69,9 @@ public class Oauth2Service {
                     .map(UserRole::getRole)
                     .map(Role::getRoleName)
                     .collect(Collectors.toList());
+            if (!refreshTokenRepository.existsByUser(user)){
+                authService.createRefreshToken(user,kakaoUserInfo.getEmail());
+            }
             return jwtTokenProvider.createToken(kakaoUserInfo.getEmail(), roles);
         }else {
             Role role = roleRepository.findByRoleName("ROLE_USER")
@@ -80,14 +86,15 @@ public class Oauth2Service {
             User saveUser =userRepository.save(user);
             UserRole userRole = UserRole.createUserRole(role,user);
             userRoleRepository.save(userRole);
-            System.out.println("저장된 유저입니다. : "+saveUser.getUserRoles());
             User findUser = userRepository.findByEmailWithRoles(saveUser.getEmail())
                     .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
             List<String> roles = userRoleRepository.findUserRolesByUser(findUser)
                     .stream()
                     .map(UserRole::getRole).map(Role::getRoleName).collect(Collectors.toList());
             System.out.println("저장된 유저입니다. : "+roles);
-
+            if (!refreshTokenRepository.existsByUser(user)){
+                authService.createRefreshToken(user,kakaoUserInfo.getEmail());
+            }
 
             return jwtTokenProvider.createToken(user.getEmail(),roles);
 

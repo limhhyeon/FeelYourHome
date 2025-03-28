@@ -62,3 +62,9 @@ jasypt:
     bean: jasyptStringEncryptor
 sub:
   path: ENC(MYPPAXcX1gLrBroq6gTstQZEEHsQ4Fyi)
+
+mqtt:
+  #broker: tcp://43.202.80.85
+  broker: ENC(5HgjtjAqTuTZ7yBP41NcdXZaXYLi+H9Au7Hm//LE/Y0=)
+  server-clientid: ENC(/Vjz/6JE9l+Kck0rouzukQbanxuSS8E7)
+  channel: ENC(atKh+bsD5xfoFguL0ZjFkfqiwydIWIOCdcT9SswZ3Lk=)

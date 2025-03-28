@@ -31,12 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         RequestMatcher permitAllMatcher = new AndRequestMatcher(
                 new OrRequestMatcher( // 먼저 허용할 URL들 정의
-                        new MvcRequestMatcher(introspector, "/auth/**")
+                        new MvcRequestMatcher(introspector, "api/auth/**"),
+                        new MvcRequestMatcher(introspector, "api/product/buy")
                 ),
                 new NegatedRequestMatcher( // 제외할 URL들
                         new OrRequestMatcher(
-                                new MvcRequestMatcher(introspector, "/auth/logout"),
-                                new MvcRequestMatcher(introspector, "/auth/test")
+                                new MvcRequestMatcher(introspector, "/api/auth/logout"),
+                                new MvcRequestMatcher(introspector, "/api/auth/test")
                         )
                 )
         );
@@ -55,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (TokenValidateException e) {
             e.printStackTrace();
             CustomErrorSend.handleException(response, e.getMessage());
+            return;
 
         }
         filterChain.doFilter(request,response);

@@ -25,6 +25,10 @@ public class SensorController {
     }
     @GetMapping("/{userProductId}/week")
     public ResponseDto weekMySensorList(@CurrentUser User user,@PathVariable("userProductId")Long userProductId){
-        return sensorService.weekMySensorListResult(user,userProductId);
+        return  sensorService.weekMySensorListResult(user,userProductId);
+    }
+    @GetMapping("/{userProductId}/week-avg")
+    public ResponseDto weekAvgMySensorList(@CurrentUser User user,@PathVariable("userProductId")Long userProductId){
+        return  sensorService.weekAvgMySensorListResult(user,userProductId);
     }
 }
