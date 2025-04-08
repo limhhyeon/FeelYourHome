@@ -14,8 +14,9 @@ spring:
             client-secret: ENC(+7ZnlPP0QZcoVfNt1Qzenld1TRPCUNQbJYa7nI0Nw06/Qet/F8wIM9wcEzBZxm54)
             authorization-grant-type: authorization_code
             redirect-uri: ENC(MfoQHbr+dt8k+mk9kXtSOPRapJMuWnqE+3CKm5UXEp4fGhRoMrPstKh8XzppwjWZ3Y486hqXBG4=)
+            #redirect-uri: http://localhost:8080/oauth2/callback/kakao
             client-name: Kakao
-            client-authentication-method: post
+            client-authentication-method: client_secret_post
             scope:
               - profile_nickname
               - profile_image

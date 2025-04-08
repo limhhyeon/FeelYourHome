@@ -9,6 +9,11 @@ import com.github.individualproject.repository.role.RoleRepository;
 import com.github.individualproject.repository.user.UserRepository;
 import com.github.individualproject.repository.userRole.UserRoleRepository;
 //import com.github.individualproject.service.auth.security.CustomOAuth2UserService;
+//import com.github.individualproject.service.auth.OAuth2LoginSuccessHandler;
+//import com.github.individualproject.service.auth.security.CustomOAuth2UserService;
+//import com.github.individualproject.service.auth.CustomOAuth2UserService;
+//import com.github.individualproject.service.auth.OAuth2LoginSuccessHandler;
+import com.github.individualproject.service.auth.security.CustomOAuth2UserService;
 import com.github.individualproject.web.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +36,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
-//    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -46,6 +53,15 @@ public class SecurityConfiguration {
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().permitAll() // 모든 요청 허용
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/oauth2/callback/*")
+                        )
                 )
                 .cors(c-> c.configurationSource(corsConfig()))
                 .exceptionHandling((exception) -> exception
