@@ -19,7 +19,7 @@ public interface SensorDataRepository extends JpaRepository<SensorData,Long>,Cus
 //    @Query("DELETE FROM SensorData s WHERE s.recordedAt < :cutoffDate")
 //    void deleteOldSensorData(@Param("cutoffDate") LocalDateTime cutoffDate);
     Optional<SensorData> findTopByUserProductOrderByRecordedAtDesc(UserProduct userProduct);
-    List<SensorData> findAllByRecordedAtOrderByRecordedAtDesc(LocalDateTime localDateTime);
-    List<SensorData> findAllByUserProduct(UserProduct userProduct);
+//    List<SensorData> findAllByRecordedAtOrderByRecordedAtDesc(LocalDateTime localDateTime);
+    List<SensorData> findAllByUserProductOrderByRecordedAtDesc(UserProduct userProduct);
 
 }

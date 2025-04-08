@@ -11,10 +11,7 @@ import com.github.individualproject.repository.userRole.UserRole;
 import com.github.individualproject.repository.userRole.UserRoleRepository;
 import com.github.individualproject.service.exception.*;
 import com.github.individualproject.web.dto.ResponseDto;
-import com.github.individualproject.web.dto.auth.DuplicateCheck;
-import com.github.individualproject.web.dto.auth.Login;
-import com.github.individualproject.web.dto.auth.SignUp;
-import com.github.individualproject.web.dto.auth.TokenDto;
+import com.github.individualproject.web.dto.auth.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +59,6 @@ public class AuthService {
         UserRole userRole = UserRole.createUserRole(role,signUpUser);
         userRoleRepository.save(userRole);
         return new ResponseDto(HttpStatus.CREATED.value(),signUpUser.getName() + "님 회원가입 성공했습니다.");
-
-
 
     }
 
@@ -164,6 +159,7 @@ public ResponseDto refreshToken(String accessToken, HttpServletResponse response
     public void createRefreshToken(User user,String email){
         String refresh = jwtTokenProvider.createRefreshToken(email);
         RefreshToken refreshToken = RefreshToken.of(user,refresh);
+        System.out.println(refreshToken);
         refreshTokenRepository.save(refreshToken);
     }
     //쿠키 삭제
@@ -176,5 +172,9 @@ public ResponseDto refreshToken(String accessToken, HttpServletResponse response
                 .sameSite("None") // SameSite 설정
                 .build();
         response.addHeader("Set-Cookie",cookie.toString());
+    }
+
+    public ResponseDto loginValidRequest(User user) {
+        return new ResponseDto(HttpStatus.OK.value(),"토큰이 유효합니다.", UserInfo.of(user));
     }
 }

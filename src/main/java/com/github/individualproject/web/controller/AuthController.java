@@ -29,6 +29,10 @@ public class AuthController {
     public ResponseDto CheckEmail(@RequestBody DuplicateCheck duplicateCheck){
         return authService.duplicateCheckResult(duplicateCheck);
     }
+    @GetMapping("/login-valid")
+    public ResponseDto loginValid(@CurrentUser User user){
+        return authService.loginValidRequest(user);
+    }
 
 
     @PostMapping("/login")

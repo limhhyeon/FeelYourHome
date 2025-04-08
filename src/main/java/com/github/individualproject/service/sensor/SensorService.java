@@ -26,10 +26,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.individualproject.repository.userProduct.QUserProduct.userProduct;
@@ -317,14 +314,16 @@ public void handleMessage(Message<String> message) throws JsonProcessingExceptio
 
     public ResponseDto weekMySensorListResult(User user, Long userProductId) {
         UserProduct userProduct = userProductRepository.findById(userProductId)
-                .orElseThrow(()-> new NotFoundException("유저의 상품이 아닙니다."));
-        // 일주일치 데이터 전체 조회
-        List<SensorData> weekSensorData = sensorDataRepository.findAllByUserProduct(userProduct);
+                .orElseThrow(() -> new NotFoundException("유저의 상품이 아닙니다."));
 
-        // 날짜별로 그룹화하고 DTO로 변환
+        // 최신순으로 조회
+        List<SensorData> weekSensorData = sensorDataRepository.findAllByUserProductOrderByRecordedAtDesc(userProduct);
+
+        // 날짜별로 그룹화하고 DTO로 변환 (순서 유지)
         List<SensorDataByDateDto> weekSensorResponses = weekSensorData.stream()
                 .collect(Collectors.groupingBy(
-                        sensorData -> sensorData.getRecordedAt().toLocalDate(), // LocalDateTime -> LocalDate
+                        sensorData -> sensorData.getRecordedAt().toLocalDate(),
+                        LinkedHashMap::new, // 순서 유지
                         Collectors.mapping(CurrentSensorData::from, Collectors.toList())
                 ))
                 .entrySet().stream()
@@ -332,14 +331,12 @@ public void handleMessage(Message<String> message) throws JsonProcessingExceptio
                 .toList();
 
         return new ResponseDto(HttpStatus.OK.value(), "일주일치 날짜별 평균 온도 습도 조회 성공", weekSensorResponses);
-
-
     }
     public ResponseDto weekAvgMySensorListResult(User user, Long userProductId) {
         UserProduct userProduct = userProductRepository.findById(userProductId)
                 .orElseThrow(() -> new NotFoundException("유저의 상품이 아닙니다."));
 
-        List<SensorData> weekSensorData = sensorDataRepository.findAllByUserProduct(userProduct);
+        List<SensorData> weekSensorData = sensorDataRepository.findAllByUserProductOrderByRecordedAtDesc(userProduct);
         List<SensorDataByAvg> weekSensorResponses = calculateWeeklyAverages(weekSensorData);
 
         return new ResponseDto(HttpStatus.OK.value(), "일주일치 날짜별 평균 온도 습도 조회 성공", weekSensorResponses);
@@ -350,6 +347,7 @@ public void handleMessage(Message<String> message) throws JsonProcessingExceptio
         return weekSensorData.stream()
                 .collect(Collectors.groupingBy(
                         sensorData -> sensorData.getRecordedAt().toLocalDate(),
+                        LinkedHashMap::new, // 순서 유지
                         Collectors.collectingAndThen(
                                 Collectors.toList(),
                                 this::calculateDailyAverage
@@ -371,7 +369,6 @@ public void handleMessage(Message<String> message) throws JsonProcessingExceptio
                 .average()
                 .orElse(0.0);
 
-        // 평균 습도에 대한 상태 계산 (알림 없이)
         HumidityStatus humidityStatus = determineHumidityStatusWithoutNotification(BigDecimal.valueOf(avgHumid));
 
         return Collections.singletonList(new TodaySensorData(avgTemp, avgHumid, humidityStatus));

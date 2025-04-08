@@ -52,15 +52,23 @@ public class Oauth2Controller {
         oauth2Service.redirect(response);
 
     }
+//    @GetMapping("/oauth2/callback/kakao")
+//    public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {
+//        log.info("코드: " +code);
+//        String accessToken = oauth2Service.getJwtToken(code);
+//        authService.createCookie(accessToken,response);
+//        // 여기서 accessToken을 사용하여 추가 작업을 수행할 수 있습니다.
+//        log.info("토큰입니다: " + accessToken);
+//        return new ResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
+//
+//    }
     @GetMapping("/oauth2/callback/kakao")
-    public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {
-        log.info("코드: " +code);
+    public void kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+        log.info("코드: " + code);
         String accessToken = oauth2Service.getJwtToken(code);
-        authService.createCookie(accessToken,response);
-        // 여기서 accessToken을 사용하여 추가 작업을 수행할 수 있습니다.
+        authService.createCookie(accessToken, response);
         log.info("토큰입니다: " + accessToken);
-        return new ResponseDto(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
-
+        response.sendRedirect("http://localhost:5173/callback"); // 프론트엔드 콜백 경로
     }
 //    @GetMapping("/oauth2/callback/kakao")
 //    public ResponseDto kakaoCallback(@RequestParam("code") String code, HttpServletResponse response) {

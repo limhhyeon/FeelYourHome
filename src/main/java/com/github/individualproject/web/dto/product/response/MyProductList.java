@@ -14,11 +14,13 @@ import lombok.ToString;
 public class MyProductList {
     private final Long userProductId;
     private final String productCode;
+    private final boolean is;
 
     public static MyProductList from(UserProduct userProduct){
         return MyProductList.builder()
                 .userProductId(userProduct.getUserProductId())
                 .productCode(userProduct.getProduct().getProductCode())
+                .is(userProduct.getIsReceiveNotification())
                 .build();
     }
 

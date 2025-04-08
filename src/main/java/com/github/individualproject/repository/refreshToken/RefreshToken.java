@@ -44,8 +44,10 @@ public class RefreshToken {
     }
     public static RefreshToken of(User user,String token){
         return RefreshToken.builder()
+                .email(user.getEmail())
                 .user(user)
                 .token(token)
+                .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusDays(7))
                 .build();
     }
