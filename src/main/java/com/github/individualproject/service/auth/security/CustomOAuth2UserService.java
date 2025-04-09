@@ -40,38 +40,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
-        // 카카오에서 반환된 원시 데이터 출력
-        log.info("카카오 사용자 정보: {}", oAuth2User.getAttributes());
-
         // kakao_account와 properties에서 데이터 추출
         Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
         Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
 
-        String email = null;
-        String nickname = null;
-
-        // kakao_account에서 email 추출
-        if (kakaoAccount != null) {
-            email = (String) kakaoAccount.get("email");
-            log.info("kakao_account에서 추출한 Email: {}", email);
-        }
-
-        // properties에서 nickname 추출
-        if (properties != null) {
-            nickname = (String) properties.get("nickname");
-            log.info("properties에서 추출한 Nickname: {}", nickname);
-        }
+        String email = (String) kakaoAccount.get("email");
+        String nickname = (String) properties.get("nickname");
 
         // kakao_account.profile에서도 nickname 확인 (중복 확인)
         if (nickname == null && kakaoAccount != null) {
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
             if (profile != null) {
                 nickname = (String) profile.get("nickname");
-                log.info("kakao_account.profile에서 추출한 Nickname: {}", nickname);
             }
         }
-
         User user;
         if (userRepository.existsByEmail(email)) {
             user = userRepository.findByEmailWithRoles(email)

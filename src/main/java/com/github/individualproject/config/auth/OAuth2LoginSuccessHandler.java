@@ -29,28 +29,18 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-
-
+        // 내가 담은 Oauth2User에서 이메일 추출
         String email = oAuth2User.getAttribute("email");
-        log.info(email+" : 이메일입니다.");
-        if (email == null) {
 
-            response.sendRedirect("http://localhost:5173/login?error=email_missing");
-            return;
-        }
-
+        //권한 추출
         List<String> roles = oAuth2User.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList());
-
         // JWT 토큰 생성
         String accessToken = jwtTokenProvider.createToken(email, roles);
-//        log.info("토큰 생성 성공: accessToken={}", accessToken);
         createCookie(accessToken,response);
 
-
-
-        // 프론트엔드로 리다이렉트
+        // 프론트엔드 메인페이지로 리다이렉트
         response.sendRedirect("http://localhost:5173/");
 
     }
