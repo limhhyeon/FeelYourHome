@@ -93,32 +93,7 @@ public class AuthService {
             throw new NotAcceptException("로그인 정보가 일치하지 않습니다..");
         }
     }
-//    public TokenDto loginResult(Login login) {
-//        try {
-//            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//
-//            User user = userRepository.findByEmailFetchJoin(login.getEmail())
-//                    .orElseThrow(() -> new NotFoundException(login.getEmail() + "에 해당하는 유저를 찾을 수 없습니다."));
-//            String email = user.getEmail();
-//            List<String> roles = user.getUserRoles().stream()
-//                    .map(UserRole::getRole)
-//                    .map(Role::getRoleName)
-//                    .collect(Collectors.toList());
-//
-//            String accessToken = jwtTokenProvider.createToken(email, roles);
-//            String refreshToken = jwtTokenProvider.createRefreshToken(email);
-//
-//            // 리프레시 토큰을 DB에 저장
-//            RefreshToken refreshTokenEntity = new RefreshToken(user.getEmail(), user, refreshToken, LocalDateTime.now(), LocalDateTime.now().plusDays(7));
-//            refreshTokenRepository.save(refreshTokenEntity);
-//
-//            return new TokenDto(accessToken, refreshToken);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new NotAcceptException("아이디 또는 비밀번호를 잘못 입력하셨습니다.");
-//        }
-//    }
+
 public ResponseDto refreshToken(String accessToken, HttpServletResponse response) {
     String email = jwtTokenProvider.getEmail(accessToken);
     if (email == null) {

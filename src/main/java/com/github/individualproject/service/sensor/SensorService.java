@@ -44,13 +44,7 @@ public class SensorService {
     private final EmailService emailService;
 
 
-//    @ServiceActivator(inputChannel = "mqttInputChannel")
-//    public void handel(String message) throws JsonProcessingException {
-//        log.info("수신된 메시지: {}", message); // 디버깅용
-//        SensorResponse sensorResponse = objectMapper.readValue(message, SensorResponse.class);
-//        System.out.println("temp : " + sensorResponse.getTemp() + " / humid: " + sensorResponse.getHumid());
-//
-//    }
+
 @ServiceActivator(inputChannel = "mqttInputChannel")
 public void handleMessage(Message<String> message) throws JsonProcessingException {
     // 메시지 페이로드와 토픽 추출
