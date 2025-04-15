@@ -1,5 +1,6 @@
 ﻿# 🌡️IoT-TempLog💧
-![iot 현재](https://github.com/user-attachments/assets/f62e2632-126d-4395-b2c6-7d7818b8f9a2)
+<img src="https://github.com/user-attachments/assets/f62e2632-126d-4395-b2c6-7d7818b8f9a2" width="400"/>
+
 
 <br/><br/>
 
