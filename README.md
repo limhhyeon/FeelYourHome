@@ -1,7 +1,5 @@
 ﻿# 🌡️IoT-TempLog💧
 
-<br/><br/>
-
 ## 소개 및 개요
 - 프로젝트 기간 : 2025.03.14 ~ 2025.03.21
 - 인원 : 백엔드 1명
@@ -22,8 +20,8 @@
 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;임홍현😺&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | :---------------------: |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🖥️ Backend |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[@limhhyeon](https://github.com/limhhyeon) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🖥️ Backend |
 
 
 <br/>
@@ -32,31 +30,21 @@
 ### [사용 기술]
 #### **🛠️ Backend**  
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white) ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)  
-- **Spring MVC + REST API** : RESTful API 개발  
-- **Spring Security** : 인증 및 권한 관리  
-- **SLF4J** : 애플리케이션 로깅  
-- **Spring Cache** : DB 리소스를 줄이기 위한 캐시 관리  
-- **Spring Schedule** : 스케줄 관리
-- **WebSocket + STOMP** : 실시간 알림 및 채팅 
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)  
 
 #### **💻 Database & Cache**    
  ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)  
-- **비관적 락(Pessimistic Lock)** : 동시성 제어
 
 #### **☁️ DevOps & Deployment**    
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)  
-- **AWS EC2** : 클라우드 서버  
-- **AWS RDS(MariaDB)** : 클라우드 DB 관리
-- **AWS S3** : 파일, 이미지 관리  
+![Mosquitto](https://img.shields.io/badge/mosquitto-%233C5280.svg?style=for-the-badge&logo=eclipsemosquitto&logoColor=white)  
 
-#### **📝 Collaboration Tools**  
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)  ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white) ![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white) 
 
-### [커밋 컨벤션]
+### [커밋]
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 ```java
@@ -72,28 +60,77 @@ ci: CI 설정 수정
 <br/>
 
 ## 3. System Architecture & ERD
-### [System Architecture]
- 
+### [System Architecture]  
+<img src="https://github.com/user-attachments/assets/fb1b4219-4ad3-473f-a05e-b9ba0e0f5ccf" width="600"/>
 
-####broker 처리
+
+#### broker 처리  
+<img src="https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79" width="600"/>
 
 
 ### [ERD]
-![iotErd](https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb)
+<img src="https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb" width="700"/>
+
 
 
 <br/>
 
 ## 4. 기능 전략
 
-#### 1. Auth
-- ` 로그인 ` :  이메일(아이디), 비밀번호 입력 받아 JWT 및 refresh 토큰 발급 후, HttpOnly 쿠키에 담아서 전달
-- ` 회원가입 ` : 닉네임/이메일 중복확인 후 남은 유저 정보를 입력하여 회원가입을 진행
-- ` 닉네임 중복확인 ` : 닉네임을 입력 받아 DB에서 존재하는 닉네임이 있는지 확인
-- ` 이메일 중복 확인 ` : 이메일을 입력 받아 DB에서 존재하는 이메일이 있는지 확인
-- ` 토큰 유효 검증 ` : 토큰 유효기간이 남아있는지 확인
-- ` 토큰 재발급 ` : 토큰 유효기간이 만료되었을 시 재발급
-- ` 로그아웃 ` : 로그아웃 시 쿠키와 토큰 제거
+#### 1. Auth (인증 관련 설계)
+- ` JWT 기반 인증 `: 로그인 시 **Access Token**과 **Refresh Token** 발급, Access Token은 **HttpOnly**, **Secure** 쿠키에 저장해 **XSS 공격** 방지. Refresh Token은 DB에서 관리, 만료 시 자동 재발급으로 세션 유지.
+- ` 이메일 인증 `: 회원가입 시 이메일로 인증번호 발송, 인증 완료 후 계정 활성화. 이메일 중복 체크로 고유성 보장.
+- ` 소셜 로그인 `: **카카오** OAuth2 기반 소셜 로그인 지원, 간편 인증 제공.
+- ` 캐싱 전략 `: 사용자 프로필 정보 조회 빈도 높아 **Redis** 캐싱 적용, DB 접근 최소화.
+- ` 보안 고려사항 `:
+  - **CSRF 방지**: 쿠키에 **SameSite** 속성 설정, **Origin/Referer** 검증.
+  - **로그아웃 처리**: 쿠키와 서버 토큰 삭제로 세션 완전 종료.
+
+####  2. Product (제품 관리)
+
+##### 서버 사이드 (서버에서 상품에 대한 설계)
+- ` 상품 등록 `: 구매된 제품만 외부 API로 검증 후 DB 등록, 웹사이트에서 **상품 번호** 입력으로 사용자 소유권 확인.
+- ` 알림 설정 `: 온도 차이 기준 초과 시 알림, 사용자별 알림 수신 여부 설정 API 제공.
+- ` 캐싱 최적화 `: 빈번한 제품 정보 조회를 **Redis** 캐싱으로 처리, 캐시 만료 시 DB 조회로 성능 향상.
+- ` 상태 관리 `: **UserProduct** 테이블로 제품 활성화 상태 추적, 미등록 제품은 접근 차단.
+
+##### 클라이언트 사이드 (제품에 대한 설계)
+- ` 데이터 전송 `: IoT 제품이 **Mosquitto 서버**로 1분 주기 온도/습도 데이터 전송, **클라이언트 ID**와 **비밀번호** 인증으로 보안 유지.
+- ` Wi-Fi 연결 `: **WiFiManager**로 제품의 Wi-Fi 네트워크 연결 지원, 사용자 친화적 설정 제공.
+- ` 보안 인증 `: 구매된 제품만 Mosquitto 서버 퍼블리싱 가능, 인증된 사용자만 데이터 접근.
+
+- ` 고려사항 `:
+  - **보안**: 미등록 제품은 Mosquitto 서버 접근 불가, 인증된 사용자만 데이터 조회.
+  - **효율성**: Redis 캐싱으로 빈번한 조회 성능 최적화, 서버와 클라이언트 간 데이터 전송 안정화.
+
+####  3. Sensor (센서 관리) 
+- ` 데이터 처리 `: 실시간 온도/습도 데이터를 **Redis**에 저장, DB 부하 감소. 2시간 주기 **평균 온도/습도**를 DB에 저장.
+- ` 사용자 피드백 반영 `: 조사 결과, 사용자는 **현재 온도/습도** 또는 **하루 평균값** 선호. 이에 **실시간 조회 API** 제공.
+- ` 알림 로직 `: Redis로 이전 데이터와 비교, 사용자 설정 온도 차이 초과 시 **실시간 메일 알림**. 평균 습도 경고 수준 초과 시 추가 알림.
+- ` 고려사항 `:
+  - **성능**: Redis 캐싱으로 실시간 데이터 조회 속도 향상, DB 접근 최소화.
+  - **사용자 경험**: 복잡한 변화 추적 대신 간단한 현재 상태 조회 중심 설계.
+
+#### 4. Mail System (메일 전송 시스템)
+- ` 알림 트리거 `: 온도 차이 또는 평균 습도 경고 수준 초과 시 메일 발송.
+- ` 비동기 처리 `: 메일 전송을 **백그라운드 작업**으로 처리, 시스템 지연 방지.
+- ` 고려사항 `:
+  - **안정성**: 메일 전송 실패 시 재시도 로직 적용, 사용자 알림 신뢰도 유지.
+  - **확장성**: 대량 메일 전송 대비 큐 기반 처리 구조 도입 가능성 검토.
+
+#### 5. Mosquitto Server (MQTT 서버 관리)
+- ` 보안 인증 `: **비밀번호** 설정 및 **클라이언트 ID/비밀번호**로 제품 인증, 외부 접근 차단.
+- ` 구독 관리 `: 제품 종료 시 구독 취소, 서버 재시작 시 **Redis**에서 활성화 상태 확인 후 재구독.
+- ` 상태 저장 `: 제품 상태(켜짐/꺼짐)를 Redis에 기록, 주기적으로 DB 동기화.
+- ` 고려사항 `:
+  - **리소스 효율**: 비활성 제품 구독 방지로 서버 부하 감소.
+  - **복구**: 서버 재시작 시 상태 복원 로직으로 데이터 유실 방지.
+
+#### 6. Considerations (종합 고려사항)
+- ` 제품 상태 관리 `: **UserProduct** 테이블로 제품 활성화 여부 추적, 미등록 제품은 구독 불가로 보안 강화.
+- ` 캐싱 최적화 `: 사용자 정보, 제품 데이터, 센서 데이터 등 빈번한 조회 항목을 **Redis**에 저장, 캐시 만료 시 DB 조회로 성능 유지.
+- ` 서버 재시작 대응 `: 서버 종료/재시작 시 Redis와 DB 간 상태 동기화, 활성화 제품만 구독으로 리소스 낭비 최소화.
+- ` 사용자 경험 `: 복잡한 데이터 대신 현재 상태 중심 API 제공, 알림 설정으로 사용자 맞춤형 정보 전달.
 
 
 <br/>
@@ -114,55 +151,100 @@ ci: CI 설정 수정
 
 <br/>
 
-## 6. Lessons Learned
+## 6. 배운 기능
 
+### *@PreDestroy*  
 
-### Lessons
-
-### *Redis를 활용한 성능 최적화*  
-
-프로젝트를 진행하면서 **웹소켓 기반 실시간 채팅**과 **데이터 조회 성능 최적화**를 위해 **Redis**를 적용하는 방법을 배웠습니다.  
-이를 통해 DB 부하를 줄이고 빠른 데이터 처리를 가능하게 했습니다.  
+Spring 애플리케이션 종료 시점에 필요한 정리 작업을 수행할 수 있는 기능
 
 #### 배운 점:  
 
-##### 1. Redis의 역할  
-- **메모리 기반 저장소**로, 빠른 읽기/쓰기 성능을 제공  
-- **Key-Value 구조**로 데이터를 저장하며, 캐싱, 세션 관리, 실시간 데이터 저장 등에 활용  
-- **웹소켓 기반 채팅**에서 DB에 직접 저장하는 대신 Redis에 저장하여 빠르게 처리하고, 일정 조건에 따라 배치 저장  
+##### 1. PreDestory의 역할  
+- @PreDestroy는 빈이 소멸되기 직전에 호출되는 메서드를 정의할 때 사용  
+- 주로 자원 정리, 세션 종료 처리, 캐시 저장, DB 저장 등 종료 직전 처리할 로직을 포함  
 
 ##### 2. 설정 방법  
-- `채팅 메시지 저장`  
-  - 채팅이 오갈 때마다 DB에 바로 저장하지 않고, Redis에 우선 저장  
-  - 이후 특정 스케줄(예: 일정 시간이 지나거나 채팅 리스트 불러올 때) DB에 일괄 저장  
-- `데이터 조회 최적화`  
-  - 매번 DB에서 유저 데이터를 가져오는 대신, Redis에 저장해두고 빠르게 조회  
-  - Redis에 데이터가 없을 경우(DB 조회 필요) → DB에서 가져온 후 Redis에 캐싱  
-- `활용한 자료구조`  
-  - `Hash`: 유저 정보 캐싱  
-  - `List`: 채팅 메시지 저장 및 관리  
+- 메서드에 @PreDestroy를 선언하고, void 반환형으로 정의
+- 파라미터를 받을 수 없으며 예외를 던지지 않는 구조로 작성해야 함 
 
 ##### 3. 적용 후 개선점  
-- **빠른 응답 속도** → 메모리 기반으로 작동하여 실시간 채팅에서도 지연 없이 데이터 처리 가능  
-- **DB 부하 감소** → 모든 요청이 DB를 거치지 않고, Redis를 활용하여 캐싱된 데이터를 먼저 조회  
-- **효율적인 데이터 관리** → 필요할 때만 DB와 동기화하여 데이터 일관성을 유지  
-
-Redis를 도입함으로써 **웹소켓 기반 실시간 채팅**과 **데이터 조회 성능**을 최적화할 수 있었습니다.  
-이를 통해 빠르고 효율적인 서비스 운영이 가능해졌습니다. 🚀  
+- 불필요한 MQTT 구독 제거로 서버 재시작 시 깔끔한 상태 유지
+- 자원 해제 안정성 확보 → MQTT 연결 등 외부 리소스를 명확하게 종료 가능
+- 예측 가능한 종료 처리로 유지보수 용이
 
 
+### *MQTT와 Mosquitto*   
 
+**MQTT(Message Queuing Telemetry Transport)**는 경량의 메시지 큐 프로토콜로, IoT(Internet of Things) 환경에서 주로 사용되고. 저전력, 저대역폭 네트워크에서 효율적으로 데이터를 전송할 수 있어 IoT 장치 간의 실시간 메시지 통신에 적합하다. Mosquitto는 MQTT 프로토콜을 구현한 오픈소스 브로커로, MQTT 기반의 메시징 시스템을 관리하는 역할을 합니다.
 
-### Learned  
+#### 배운 점:  
 
-- **Redis를 활용하여 성능을 최적화**하면서, 데이터 저장 전략을 보다 효율적으로 설계하는 방법을 배웠다.  
+##### 1. MQTT의 역할  
+- 경량 메시징 프로토콜: IoT 환경에서 적합한 경량의 메시징 시스템으로, 낮은 대역폭과 전력 소비로 데이터를 효율적으로 전송. 
+- 퍼블리시-서브스크라이브 모델: 클라이언트는 데이터를 퍼블리시(발행)하고, 다른 클라이언트는 이를 서브스크라이브(구독)하여 실시간으로 데이터를 수신.
+- 주제 기반 메시지 전송: 주제(topic)를 기반으로 메시지를 전달하여, 관심 있는 주제만 구독하여 필요한 데이터만 받을 수 있음.
 
+##### 1-2. Mosquitto의 역할
+- MQTT 브로커: Mosquitto는 MQTT 프로토콜을 사용하는 브로커로, 클라이언트 간의 메시지를 중계하고, 연결, 구독 및 퍼블리시된 메시지를 관리.
+- 클라이언트 관리: 클라이언트들이 연결을 설정하고, 메시지를 주고받을 수 있도록 중계하는 역할을 함
+- 보안 기능: Mosquitto는 인증, 암호화, 클라이언트 ID 관리 등의 보안 기능을 제공하여 안전한 메시지 통신을 보장.
 
+##### 2. 설정 방법  
+- MQTT 연결 설정: Mosquitto 브로커와 클라이언트 간의 연결을 설정하고, 주제를 기반으로 메시지를 주고받도록 설정.
+- 클라이언트 인증: Mosquitto는 사용자 인증을 위한 기능을 제공하여, MQTT 브로커에 접근하는 클라이언트를 관리.
+
+##### 3. 적용 후 개선점  
+- 실시간 데이터 전송: IoT 장치 간의 실시간 데이터 전송을 지원하여, 온도, 습도 등의 센서 데이터를 실시간으로 처리.
+- 확장성: MQTT와 Mosquitto를 활용하여 수많은 IoT 장치를 효율적으로 관리하고 통신할 수 있게 됨.
+- 보안 강화: Mosquitto에서 제공하는 인증 및 암호화 기능을 통해, IoT 장치 간의 안전한 데이터 통신을 보장.
+- 효율적인 메시징: 퍼블리시-서브스크라이브 모델을 통해 효율적으로 데이터 전송을 관리하고, 불필요한 데이터 전송을 최소화.
+
+### *@EventListener*  
+
+Spring 애플리케이션에서 특정 이벤트가 발생했을 때, 이를 처리하기 위한 리스너 기능.
+
+#### 배운 점:  
+
+##### 1. @EventListener의 역할
+- @EventListener는 애플리케이션 이벤트가 발생했을 때 이를 수신하고 처리하는 메서드를 정의하는 어노테이션입니다.
+- 주로 애플리케이션의 상태 변화, 종료 등과 같은 이벤트에 반응하여 특정 작업을 실행할 때 사용됩니다. 
+
+##### 2. 설정 방법  
+- @EventListener는 메서드에 선언하여 이벤트 리스닝을 설정합니다.
+- 특정 이벤트에 반응하도록 메서드를 정의하고, 해당 이벤트가 발생했을 때 실행할 로직을 작성합니다.
+
+##### 3. 적용 후 개선점  
+- 서버 종료 시점에 @PreDestroy를 사용하는 대신, @EventListener를 사용하여 애플리케이션 종료 이벤트를 수신하고, Redis 데이터를 안전하게 DB에 저장하도록 했습니다.
+- Redis 연결이 종료되기 전에 이벤트 리스너가 실행되어 필요한 데이터를 처리할 수 있어, 데이터 손실을 방지하고 안정적인 종료 처리가 가능했습니다.
+- 애플리케이션 종료 전에 처리해야 할 중요한 로직을 실행하는 유연한 방법을 제공하여 서버 종료 전 상태 관리에 대한 신뢰성을 높였습니다.
+
+### *OAuth2*  
+
+OAuth2(Open Authorization 2.0)은 외부 애플리케이션이 사용자의 데이터를 안전하게 접근할 수 있도록 권한을 부여하는 인증 프로토콜입니다. 주로 소셜 로그인 기능에서 사용되며, 사용자가 자신의 계정 정보를 공유하지 않고도 제3자 애플리케이션이 서비스에 접근할 수 있게 도와줍니다.
+
+#### 배운 점:  
+
+##### 1. OAuth2의 역할
+- 권한 부여: 사용자가 자신의 인증 정보를 직접 제공하지 않고, 외부 애플리케이션이 안전하게 사용자 데이터를 접근할 수 있도록 권한을 부여.
+- 액세스 토큰 발급: 사용자가 로그인하면, 인증 서버는 클라이언트 애플리케이션에 액세스 토큰을 발급. 이를 통해 외부 애플리케이션은 사용자의 데이터를 안전하게 조회할 수 있음.
+
+##### 2. 설정 방법  
+- OAuth2 설정: 인증 서버(예: Google, Facebook, Kakao)와의 연결을 설정하고, 액세스 토큰을 요청할 수 있도록 클라이언트 애플리케이션을 구성.
+- 소셜 로그인 구현: OAuth2 프로토콜을 사용하여 소셜 로그인 시스템을 구현하고, 다양한 소셜 플랫폼에서 제공하는 인증 API를 통해 사용자의 로그인 정보를 처리.
+- 토큰 저장: 발급된 액세스 토큰과 리프레시 토큰을 클라이언트 애플리케이션에 안전하게 저장하여 사용.
+
+##### 3. 적용 후 개선점  
+- 간편한 소셜 로그인: 기존의 복잡한 소셜 로그인 로직을 간소화하여 보안적이고 효율적인 로그인 프로세스 구현과 정보에 민감한 code 등 url등을 서비스에서 이용 안할 수 있어 보안적으로 개선.
+- 보안성 강화: 사용자 인증 정보를 클라이언트 애플리케이션에 저장하지 않고, 안전하게 인증 서버를 통해 처리. 액세스 토큰을 사용하여 외부 애플리케이션에서만 사용자의 데이터를 접근 가능.
+- 유연한 권한 관리: OAuth2 프로토콜을 통해 특정 범위(scope)만 요청하여, 사용자의 개인정보를 최소화하고 보호할 수 있음.
 
 
 <br/>
 
 
 ## 7. 느낀점
+- 최대한 다양한 기능들을 구현하면서 최적화도 함께 고려해봤지만, 처음 사용하는 기술들도 많았고 그만큼 더 고민해야 할 부분이 많다는 것을 느꼈다. 앞으로는 부족했던 부분들을 보완하고, 전체적인 구조를 다듬는 리팩토링도 진행할 예정이다.  
+  
+- 이번에는 IoT를 활용해 온도와 습도 값을 받아오는 기능까지만 구현했지만, 이를 통해 IoT의 확장 가능성을 크게 느꼈다. 앞으로는 다양한 IoT 기기를 활용해서 데이터를 받아올 뿐만 아니라, 직접 기기를 제어할 수 있는 기능까지 구현해보고 싶다.
 
 
