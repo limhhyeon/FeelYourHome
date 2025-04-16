@@ -65,11 +65,11 @@ ci: CI 설정 수정
 
 
 #### broker 처리  
-<img src="https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79" width="500"/>
+<img src="https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79" width="600"/>
 
 
 ### [ERD]
-<img src="https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb" width="600"/>
+<img src="https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb" width="700"/>
 
 
 
