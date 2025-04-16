@@ -61,9 +61,10 @@ ci: CI 설정 수정
 
 ## 3. System Architecture & ERD
 ### [System Architecture]  
- 
+![아키텍처 iot](https://github.com/user-attachments/assets/fb1b4219-4ad3-473f-a05e-b9ba0e0f5ccf)
 
-####broker 처리  
+#### broker 처리  
+![broker 이미지 스샷](https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79)
 
 
 ### [ERD]
@@ -236,13 +237,12 @@ OAuth2(Open Authorization 2.0)은 외부 애플리케이션이 사용자의 데�
 - 유연한 권한 관리: OAuth2 프로토콜을 통해 특정 범위(scope)만 요청하여, 사용자의 개인정보를 최소화하고 보호할 수 있음.
 
 
-
-
-
-
 <br/>
 
 
 ## 7. 느낀점
+- 최대한 다양한 기능들을 구현하면서 최적화도 함께 고려해봤지만, 처음 사용하는 기술들도 많았고 그만큼 더 고민해야 할 부분이 많다는 것을 느꼈다. 앞으로는 부족했던 부분들을 보완하고, 전체적인 구조를 다듬는 리팩토링도 진행할 예정이다.  
+  
+- 이번에는 IoT를 활용해 온도와 습도 값을 받아오는 기능까지만 구현했지만, 이를 통해 IoT의 확장 가능성을 크게 느꼈다. 앞으로는 다양한 IoT 기기를 활용해서 데이터를 받아올 뿐만 아니라, 직접 기기를 제어할 수 있는 기능까지 구현해보고 싶다.
 
 
