@@ -61,14 +61,16 @@ ci: CI 설정 수정
 
 ## 3. System Architecture & ERD
 ### [System Architecture]  
-![아키텍처 iot](https://github.com/user-attachments/assets/fb1b4219-4ad3-473f-a05e-b9ba0e0f5ccf)
+<img src="https://github.com/user-attachments/assets/fb1b4219-4ad3-473f-a05e-b9ba0e0f5ccf" width="600"/>
+
 
 #### broker 처리  
-![broker 이미지 스샷](https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79)
+<img src="https://github.com/user-attachments/assets/34d939ad-1599-4b4a-91c7-a2e169c49a79" width="500"/>
 
 
 ### [ERD]
-![iotErd](https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb)
+<img src="https://github.com/user-attachments/assets/4074d0f0-5742-4cee-a1d0-c385c4ef00bb" width="600"/>
+
 
 
 <br/>
