@@ -1,0 +1,29 @@
+name: CiPipe
+
+on:
+  push:
+    branches:
+      - deploy  # main 브랜치에 푸시될 때마다 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t honghyeon/honghyeon:v3 .
+
+      - name: Docker Login to Docker Hub
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push honghyeon/honghyeon:v3  # 빌드한 이미지를 Docker Hub로 푸시

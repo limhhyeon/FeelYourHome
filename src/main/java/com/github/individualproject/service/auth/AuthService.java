@@ -126,7 +126,7 @@ public ResponseDto refreshToken(String accessToken, HttpServletResponse response
                 .secure(true) // https 환경에서 true로 설정
                 .path("/")
                 .maxAge(60 * 60 * 24)
-                .sameSite("None") // SameSite 설정
+                .sameSite("Lax") // SameSite 설정
                 .build();
         response.addHeader("Set-Cookie",cookie.toString());
     }

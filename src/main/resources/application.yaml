@@ -28,7 +28,8 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
   datasource:
-    url: jdbc:mysql://localhost:3306/individual_project?useUnicode=true&characterEncoding=UTF-8
+    #url: jdbc:mysql://localhost:3306/individual_project?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mariadb://sensordb.cn000owqib3s.ap-northeast-2.rds.amazonaws.com:3306/drug_store_db?useUnicode=true&characterEncoding=UTF-8
     username: ENC(wN8PJa6sdt2a/vP0XYlM4A==)
     password: ENC(V1CreIfUoLKDwcUub8DQu9ZRSymbzxaw)
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -70,3 +71,6 @@ mqtt:
   server-clientid: ENC(/Vjz/6JE9l+Kck0rouzukQbanxuSS8E7)
   channel: ENC(atKh+bsD5xfoFguL0ZjFkfqiwydIWIOCdcT9SswZ3Lk=)
   password: ENC(bjTTJvO9Oun9gyBFjgtI+W5/4LOCYf7X)
+
+front:
+  redirect: ENC(jI4q3kY/NN0K3ZHRh/JKhktQ1uVAysvUsmB86TUSwS8=)
