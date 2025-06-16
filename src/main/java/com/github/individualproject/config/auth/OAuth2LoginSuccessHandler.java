@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
+    @Value("${front.redirect}")
+    private String redirectAddress;
 
 
     @Override
@@ -41,7 +44,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         createCookie(accessToken,response);
 
         // 프론트엔드 메인페이지로 리다이렉트
-        response.sendRedirect("http://localhost:5173/");
+        response.sendRedirect(redirectAddress);
 
     }
     public void createCookie(String newAccessToken,HttpServletResponse response){
@@ -50,7 +53,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 .secure(true) // https 환경에서 true로 설정
                 .path("/")
                 .maxAge(60 * 60 * 24)
-                .sameSite("None") // SameSite 설정
+                .sameSite("Lax") // SameSite 설정
                 .build();
         response.addHeader("Set-Cookie",cookie.toString());
     }

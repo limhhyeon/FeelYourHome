@@ -31,6 +31,8 @@ public class MqttConfig {
     private String channel;
     @Value("${mqtt.server-clientid}")
     private String serverClientId;
+    @Value("${mqtt.password}")
+    private String password;
 
     @Bean
     public MqttClient mqttStatusClient() throws MqttException {
@@ -39,6 +41,7 @@ public class MqttConfig {
         MqttClient client = new MqttClient(broker, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
+        options.setPassword(password.toCharArray());
         client.connect(options);
 
 
@@ -53,6 +56,7 @@ public class MqttConfig {
         options.setAutomaticReconnect(true);
         options.setConnectionTimeout(10); // 연결 타임아웃 설정
         options.setKeepAliveInterval(60); // Keep-alive 간격 설정
+        options.setPassword(password.toCharArray());
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -62,15 +66,7 @@ public class MqttConfig {
         return new DirectChannel();
     }
 
-//    @Bean
-//    public MessageProducer inbound() {
-//        MqttPahoMessageDrivenChannelAdapter adapter =
-//                new MqttPahoMessageDrivenChannelAdapter("myServerMqtt", mqttClientFactory());
-//        adapter.setOutputChannelName("mqttInputChannel");
-//        adapter.setCompletionTimeout(5000);
-//        adapter.setQos(1);
-//        return adapter;
-//    }
+
 @Bean
 public MqttPahoMessageDrivenChannelAdapter inbound() {  // 반환 타입 변경
     MqttPahoMessageDrivenChannelAdapter adapter = createAndStartAdapter();

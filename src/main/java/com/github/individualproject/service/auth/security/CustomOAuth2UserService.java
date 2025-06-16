@@ -1,5 +1,6 @@
 package com.github.individualproject.service.auth.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.individualproject.config.auth.JwtTokenProvider;
 import com.github.individualproject.repository.refreshToken.RefreshToken;
 import com.github.individualproject.repository.refreshToken.RefreshTokenRepository;
@@ -10,6 +11,7 @@ import com.github.individualproject.repository.user.UserRepository;
 import com.github.individualproject.repository.userRole.UserRole;
 import com.github.individualproject.repository.userRole.UserRoleRepository;
 import com.github.individualproject.service.exception.NotFoundException;
+import com.github.individualproject.web.dto.social.kako.KakaoOAuth2Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ObjectMapper objectMapper;
 //    private final AuthService authService;
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -41,19 +44,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         // kakao_account와 properties에서 데이터 추출
-        Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
-        Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
+        KakaoOAuth2Response kakaoResponse = objectMapper.convertValue(oAuth2User.getAttributes(), KakaoOAuth2Response.class);
 
-        String email = (String) kakaoAccount.get("email");
-        String nickname = (String) properties.get("nickname");
+        log.info("전체 확인 : "+kakaoResponse);
+        String email = kakaoResponse.getKakaoAccount() != null ? kakaoResponse.getKakaoAccount().getEmail() : null;
+        String nickname = extractNickname(kakaoResponse);
+        log.info("이메일 확인" +email);
 
         // kakao_account.profile에서도 nickname 확인 (중복 확인)
-        if (nickname == null && kakaoAccount != null) {
-            Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
-            if (profile != null) {
-                nickname = (String) profile.get("nickname");
-            }
+        if (email == null || nickname == null) {
+            throw new OAuth2AuthenticationException("Kakao 응답에서 필수 정보(email 또는 nickname)를 가져올 수 없습니다.");
         }
+
         User user;
         if (userRepository.existsByEmail(email)) {
             user = userRepository.findByEmailWithRoles(email)
@@ -98,5 +100,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         RefreshToken refreshToken = RefreshToken.of(user,refresh);
         System.out.println(refreshToken);
         refreshTokenRepository.save(refreshToken);
+    }
+    private String extractNickname(KakaoOAuth2Response response) {
+        // properties에서 nickname 가져오기
+        if (response.getProperties() != null && response.getProperties().getNickname() != null) {
+            return response.getProperties().getNickname();
+        }
+        // kakao_account.profile에서 nickname 가져오기
+        if (response.getKakaoAccount() != null && response.getKakaoAccount().getProfile() != null) {
+            return response.getKakaoAccount().getProfile().getNickname();
+        }
+        return null;
     }
 }
